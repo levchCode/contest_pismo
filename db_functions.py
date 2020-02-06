@@ -81,10 +81,8 @@ def get_submitions():
     joined = pd.merge(joined, tasks,  how='left', left_on="2_y", right_on=0).dropna()
 
     needed_rows = joined[['0_y', 1, '1_x', 4, 5, 6]]
-    
-    response = needed_rows.rename(columns={'0_y':'sub_id', 1:'task_name', '1_x':'user', 4:'grammar', 5:'vocab', 6:'response'})
 
-    return response.to_json(orient='records', force_ascii=False)
+    return needed_rows.values.tolist()
 
 def submit(j):
     sheet = init()
@@ -112,7 +110,7 @@ def get_sub(sub_id):
     tasks = sheet.values().get(spreadsheetId="1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg", range="Tasks!A2:C").execute()
     tasks_rows = tasks.get('values', [])
 
-    ces = sheet.values().get(spreadsheetId="1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg", range="CE!A2:F").execute()
+    ces = sheet.values().get(spreadsheetId="1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg", range="CE!A2:G").execute()
     ces_rows = ces.get('values', [])
 
     users = pd.DataFrame.from_records(user_rows)
@@ -126,14 +124,9 @@ def get_sub(sub_id):
     result = joined.loc[joined['0_y'] == str(sub_id)]
     result_comments = ces.loc[ces[1] == str(sub_id)]
 
-    needed_rows = result[['0_y', 1, '1_x', '3_y', 4, 5, 6]]
+    result_comments = pd.merge(users, result_comments,  how='left', left_on=0, right_on=2).dropna()
 
-    response = needed_rows.rename(columns={'0_y':'sub_id', 1:'task_name', '1_x':'user', '3_y':'answer', 4:'grammar', 5:'vocab', 6:'response'})
+    response = result[['0_y', 1, '1_x', '3_y', 4, 5, 6, 2]]
 
     return response.values.tolist(), result_comments.values.tolist()
     
-#print(register("lech", "mems", "mems@gmail.cpm"))
-#print(login("lech", "mes"))
-#print(get_submitions())
-#print(submit('{"user_id":1, "task_id":2, "answer": "What is this garbage here?", "complete": true}'))
-print(get_sub(1))
