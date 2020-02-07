@@ -18,6 +18,37 @@
         <br>
         <br>
         <h2>Оценки и комментарии</h2>
+        {% if not disable %}
+        <h3>Оценить работу</h3>
+        <form method="post" action="/comment">
+            <p>Соответствие заданию</p>
+            <input hidden type="number" name="sub_id" value={{ work[0] }}>
+            <input type="radio" name="topic" value=5>5
+            <input type="radio" name="topic" value=4>4
+            <input type="radio" name="topic" value=3>3
+            <input type="radio" name="topic" value=2>2
+            <input type="radio" name="topic" value=1>1
+
+            <p>Грамматика</p>
+            <input type="radio" name="grammar" value=5>5
+            <input type="radio" name="grammar" value=4>4
+            <input type="radio" name="grammar" value=3>3
+            <input type="radio" name="grammar" value=2>2
+            <input type="radio" name="grammar" value=1>1
+            
+            <p>Лексика</p>
+            <input type="radio" name="vocab" value=5>5
+            <input type="radio" name="vocab" value=4>4
+            <input type="radio" name="vocab" value=3>3
+            <input type="radio" name="vocab" value=2>2
+            <input type="radio" name="vocab" value=1>1
+            
+            <p>Комментарий</p>
+            <textarea name="comment"></textarea>
+            <button type="submit">Отправить</button>
+        </form>
+        {% endif %}
+
         <br>
         {% for c in comments %}
             <div>

@@ -91,7 +91,7 @@ def submit(user_id, task_id, answer, complete):
     sheet.values().append(spreadsheetId='1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg', valueInputOption="RAW", range="Submissions", body={'values': [row]}).execute()
     return last_sub+1
 
-def get_sub(sub_id):
+def get_sub(sub_id, user_id):
     sheet = init()
     
     users = sheet.values().get(spreadsheetId="1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg", range="Users!A2:D").execute()
@@ -121,7 +121,9 @@ def get_sub(sub_id):
 
     response = result[['0_y', 1, '1_x', '3_y', 4, 5, 6, 2]]
 
-    return response.values.tolist(), result_comments.values.tolist()
+    user_commented = result_comments[result_comments['0_x'] == user_id]
+
+    return response.values.tolist(), result_comments.values.tolist(), not user_commented.empty
 
 def get_tasks():
     sheet = init()
@@ -146,3 +148,15 @@ def get_user(u_id):
     users = pd.DataFrame.from_records(rows)
     res = users.loc[users[0] == u_id]
     return res.values.tolist()[0]
+
+def comment(sub_id, u_id, g_s, v_s, tr_s, comment):
+    sheet = init()
+
+    result = sheet.values().get(spreadsheetId="1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg", range="CE!A2:G").execute()
+    rows = result.get('values', [])
+    last_comment = int(rows[len(rows)-1][0])
+    
+    row = [last_comment+1, sub_id, u_id, g_s, v_s, tr_s, comment]
+
+    sheet.values().append(spreadsheetId='1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg', valueInputOption="RAW", range="CE", body={'values': [row]}).execute()
+    

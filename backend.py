@@ -66,8 +66,9 @@ def top():
 def subm():
     if session.get('logged_user'):
         _id = request.args.get('id')
-        work, comments = get_sub(_id)
-        return render_template('submission.html', work=work[0], comments=comments)
+        user_id = session.get('logged_user')
+        work, comments, disable_form = get_sub(_id, user_id)
+        return render_template('submission.html', work=work[0], comments=comments, disable=disable_form)
     else:
         return redirect(url_for('log_in'))
 
@@ -92,6 +93,17 @@ def sub():
             return render_template('submit.html', task=task, user=user)
         else:
             return redirect(url_for('log_in'))
+
+@app.route("/comment", methods=["POST"])
+def leave_comment():
+    sub_id = request.form.get('sub_id')
+    user_id = session.get('logged_user')
+    g_s = request.form.get('grammar')
+    v_s = request.form.get('vocab')
+    tr_s = request.form.get('topic')
+    text = request.form.get('comment')
+    comment(sub_id, user_id, g_s, v_s, tr_s, text)
+    return redirect(url_for('subm') + "?id=" + sub_id)
 
 
 if __name__ == '__main__':
