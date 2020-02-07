@@ -14,12 +14,16 @@
         {% endif %}
         
         
-        <p>Конкурс письменных работ на русском и английском языках</p>
-        {% if logged %}
-        <a href="/takepart">Участвовать</a>
-        {% else %}
-        <a href="/register">Зарегистрироваться</a>
-        {% endif %}
-        
+        <h2>Выберете номинацию</h2>
+
+        {% for t in tasks %}
+            <div>
+                <h3>{{ t[1] }}</h3>
+                <p>Задание: {{ t[2] }}</p>
+                <a href="/submit?task_id={{ t[0] }}">Приступить</a>
+            </div>
+            <br>  
+        {% endfor %}
+
     </body>
 </html>

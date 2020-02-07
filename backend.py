@@ -1,22 +1,61 @@
-from flask import Flask, json, render_template, request
+from flask import Flask, json, render_template, request, url_for, redirect, session
 import os
-
 from db_functions import *
+
 
 app = Flask(__name__, static_url_path='')
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 60*60
+app.secret_key = "S1h7D2jT0"
 
 @app.route("/")
 def index():
-    return render_template('index.html')
+    logged = False
+    if session.get('logged_user'):
+        info = get_user(session.get('logged_user'))[1]
+        logged = True
+    else:
+        info = ''
+    return render_template('index.html', login_info=info, logged=logged)
 
-@app.route("/register")
+@app.route("/takepart")
+def takepart():
+    logged = False
+    if session.get('logged_user'):
+        info = get_user(session.get('logged_user'))[1]
+        logged = True
+    else:
+        info = ''
+
+    tasks = get_tasks()
+
+    return render_template('takepart.html', login_info=info, logged=logged, tasks=tasks)
+
+@app.route("/register", methods=["GET", "POST"])
 def reg():
-    return render_template('register.html')
+    if request.method == "POST":
+        register(request.form['nickname'], request.form['pwd'], request.form['email'])
+        return redirect(url_for('log_in'))
+    else:
+        return render_template('register.html')
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def log_in():
-    return render_template('login.html')
+    if request.method == "POST":
+        user = request.form.get('nickname')
+        pwd = request.form.get('pwd')
+        _id = login(user, pwd)
+        if _id != 0:
+            session['logged_user'] = _id
+            return redirect(url_for('index'))
+        else:
+            return render_template('login.html')
+    else:
+        return render_template('login.html')
+
+@app.route("/logout", methods=["GET"])
+def log_out():
+    session['logged_user'] = False
+    return redirect(url_for('index'))
 
 @app.route("/top")
 def top():
@@ -25,13 +64,34 @@ def top():
 
 @app.route("/submission")
 def subm():
-    _id = request.args.get('id')
-    work, comments = get_sub(_id)
-    return render_template('submission.html', work=work[0], comments=comments)
+    if session.get('logged_user'):
+        _id = request.args.get('id')
+        work, comments = get_sub(_id)
+        return render_template('submission.html', work=work[0], comments=comments)
+    else:
+        return redirect(url_for('log_in'))
 
-@app.route("/submit")
+@app.route("/submit", methods=["GET", "POST"])
 def sub():
-    return render_template('success.html')
+    if request.method == "POST":
+        if session.get('logged_user'):
+            task_id = request.form.get('task_id')
+            answer = request.form.get('answer')
+            user_id = session.get('logged_user')
+            done = not request.form.get('done')
+            s_id = submit(user_id, task_id, answer, done)
+            return redirect(url_for('subm') + "?id=" + str(s_id))
+        else:
+            return redirect(url_for('log_in'))
+    else:
+        if session.get('logged_user'):
+            t_id = request.args.get('task_id')
+            task = get_task(t_id)
+            user = get_user(session.get('logged_user'))[1]
+
+            return render_template('submit.html', task=task, user=user)
+        else:
+            return redirect(url_for('log_in'))
 
 
 if __name__ == '__main__':

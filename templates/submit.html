@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Конкурс письменных работ "Письмо-2020"</title>
+    </head>
+    <body>
+        <h1>Письмо-2020</h1>
+        <p>Работа пользователя {{ user }}</p>
+        <p>Номинация: {{ task[1] }}</p>
+        <br>
+        <br>
+        <h2>Задание</h2>
+        <form method="post" action="/submit">
+            <input hidden type="number" name="task_id" value="{{ task[0] }}">
+            <p>{{ task[2] }}</p>
+            <br>
+            <br>
+            <h2>Напишите ответ на задание в поле ниже</h2>
+            <textarea name="answer"></textarea>
+            <br>
+            <br>
+            <input type="checkbox" id="notdone" name="notdone"> <label for="notdone">Я не закончил</label>
+            <br>
+            <br>
+            <button type="submit">Отправить</button>
+        </form>
+    </body>
+</html>

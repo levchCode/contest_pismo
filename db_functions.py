@@ -42,7 +42,7 @@ def register(nick, pwd, email):
     row = [last_user+1, nick, pwd, email]
 
     sheet.values().append(spreadsheetId='1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg', valueInputOption="RAW", range="Users", body={'values': [row]}).execute()
-    return "Registration Successful"
+    return True
 
 # Вход для участников
 def login(nick, pwd):
@@ -50,15 +50,10 @@ def login(nick, pwd):
 
     result = sheet.values().get(spreadsheetId="1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg", range="Users!A2:D").execute()
     rows = result.get('values', [])
+    users = pd.DataFrame.from_records(rows)
+    res = users.loc[(users[1] == nick) & (users[2] == pwd)]
 
-    status = "Nope"
-
-    for r in rows:
-        if r[1] == nick and r[2] == pwd:
-            status = "OK"
-            break
-
-    return status
+    return res.values.tolist()[0][0]
 
 # Получить все работы за конкурс
 def get_submitions():
@@ -84,19 +79,17 @@ def get_submitions():
 
     return needed_rows.values.tolist()
 
-def submit(j):
+def submit(user_id, task_id, answer, complete):
     sheet = init()
-
-    data = json.loads(j)
 
     result = sheet.values().get(spreadsheetId="1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg", range="Submissions!A2:G").execute()
     rows = result.get('values', [])
     last_sub = int(rows[len(rows)-1][0])
     
-    row = [last_sub+1, data["user_id"], data["task_id"], data["answer"], 0, 0, 0, data["complete"]]
+    row = [last_sub+1, user_id, task_id, answer, 0, 0, 0, complete]
 
     sheet.values().append(spreadsheetId='1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg', valueInputOption="RAW", range="Submissions", body={'values': [row]}).execute()
-    return {"status": 1, "sub_id": last_sub+1}
+    return last_sub+1
 
 def get_sub(sub_id):
     sheet = init()
@@ -129,4 +122,27 @@ def get_sub(sub_id):
     response = result[['0_y', 1, '1_x', '3_y', 4, 5, 6, 2]]
 
     return response.values.tolist(), result_comments.values.tolist()
-    
+
+def get_tasks():
+    sheet = init()
+
+    result = sheet.values().get(spreadsheetId="1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg", range="Tasks!A2:C").execute()
+    rows = result.get('values', [])
+
+    return rows
+
+def get_task(t_id):
+    tasks = get_tasks()
+    tasks = pd.DataFrame.from_records(tasks)
+    res = tasks.loc[tasks[0] == t_id]
+    return res.values.tolist()[0]
+
+def get_user(u_id):
+    sheet = init()
+
+    result = sheet.values().get(spreadsheetId="1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg", range="Users!A2:D").execute()
+    rows = result.get('values', [])
+
+    users = pd.DataFrame.from_records(rows)
+    res = users.loc[users[0] == u_id]
+    return res.values.tolist()[0]
