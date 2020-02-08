@@ -154,6 +154,29 @@ def get_user(u_id):
     res = users.loc[users[0] == u_id]
     return res.values.tolist()[0]
 
+def update_avg(sub_id):
+    sheet = init()
+
+    result = sheet.values().get(spreadsheetId="1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg", range="CE!A2:G").execute()
+    rows = result.get('values', [])
+
+    grades = pd.DataFrame.from_records(rows)
+    grades = grades.loc[grades[1] == str(sub_id)]
+
+    n_row = int(sub_id) + 1 
+    re_row = [grades[3].astype('int32').mean().item(), grades[4].astype('int32').mean().item(), grades[5].astype('int32').mean().item()]
+  
+    rag = "Submissions!E" + str(n_row) + ":G" + str(n_row)
+
+    body = {
+        "values": [
+            re_row
+        ]
+    }
+
+    sheet.values().update(spreadsheetId='1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg', valueInputOption="RAW", range=rag, body=body)
+
+
 def comment(sub_id, u_id, g_s, v_s, tr_s, comment):
     sheet = init()
 
@@ -164,6 +187,7 @@ def comment(sub_id, u_id, g_s, v_s, tr_s, comment):
     row = [last_comment+1, sub_id, u_id, g_s, v_s, tr_s, comment]
 
     sheet.values().append(spreadsheetId='1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg', valueInputOption="RAW", range="CE", body={'values': [row]}).execute()
+    update_avg(sub_id)
 
 def check_date():
     sheet = init()
