@@ -5,7 +5,9 @@
     </head>
     <body>
         <h1>Письмо-2020</h1>
-        <br>
+
+        <p>{{ state[0] }} {{ state[1] }} {{ state[2] }}</p>
+
         {{ login_info }}
         {% if logged %}
         <a href="/logout">Выйти</a>

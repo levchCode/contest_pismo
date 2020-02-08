@@ -6,6 +6,7 @@ from google.auth.transport.requests import Request
 from apscheduler.schedulers.blocking import BlockingScheduler
 import pandas as pd
 import json
+from datetime import datetime as dt
 
 def init():
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
@@ -76,6 +77,10 @@ def get_submitions():
     joined = pd.merge(joined, tasks,  how='left', left_on="2_y", right_on=0).dropna()
 
     needed_rows = joined[['0_y', 1, '1_x', 4, 5, 6]]
+
+    needed_rows["avg"] = (needed_rows[4].astype('int64') + needed_rows[5].astype('int64') + needed_rows[6].astype('int64'))/3
+
+    needed_rows = needed_rows.sort_values(by='avg', ascending=False)
 
     return needed_rows.values.tolist()
 
@@ -159,4 +164,28 @@ def comment(sub_id, u_id, g_s, v_s, tr_s, comment):
     row = [last_comment+1, sub_id, u_id, g_s, v_s, tr_s, comment]
 
     sheet.values().append(spreadsheetId='1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg', valueInputOption="RAW", range="CE", body={'values': [row]}).execute()
-    
+
+def check_date():
+    sheet = init()
+
+    result = sheet.values().get(spreadsheetId="1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg", range="Dates!A2:E").execute()
+    row = result.get('values', [])[0]
+
+    start_contest = dt.strptime(row[0], "%d.%m.%Y %H:%M:%S")
+    stop_contest = dt.strptime(row[1], "%d.%m.%Y %H:%M:%S")
+    start_vote = dt.strptime(row[2], "%d.%m.%Y %H:%M:%S")
+    stop_vote = dt.strptime(row[3], "%d.%m.%Y %H:%M:%S") 
+    result = dt.strptime(row[4], "%d.%m.%Y %H:%M:%S") 
+    today = dt.now()
+
+    if today > start_contest and today < stop_contest:
+        td = stop_contest-today
+        secs = td.total_seconds()
+        hours = str(int(secs / 3600))
+        minutes = str(int(secs / 60) % 60)
+        seconds = str(int(secs % 60))
+        return ["Идет конкурс. Осталось", hours + ":" + minutes + ":" + seconds]
+    elif today > start_vote and today < stop_vote:
+        return ["Голосование. Осталось", (stop_vote-today).days, "дней"]
+    else:
+        return ["Конкурс начнется через", (start_contest-today).days, "дней"]

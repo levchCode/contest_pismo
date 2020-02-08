@@ -2,7 +2,6 @@ from flask import Flask, json, render_template, request, url_for, redirect, sess
 import os
 from db_functions import *
 
-
 app = Flask(__name__, static_url_path='')
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 60*60
 app.secret_key = "S1h7D2jT0"
@@ -15,7 +14,10 @@ def index():
         logged = True
     else:
         info = ''
-    return render_template('index.html', login_info=info, logged=logged)
+
+    current_state = check_date()
+
+    return render_template('index.html', login_info=info, logged=logged, state=current_state)
 
 @app.route("/takepart")
 def takepart():
