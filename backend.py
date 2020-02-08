@@ -2,7 +2,7 @@ from flask import Flask, json, render_template, request, url_for, redirect, sess
 import os
 from db_functions import *
 
-app = Flask(__name__, static_url_path='')
+app = Flask(__name__, static_url_path='/static')
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 60*60
 app.secret_key = "S1h7D2jT0"
 
