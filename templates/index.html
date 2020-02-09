@@ -5,6 +5,7 @@
     </head>
     <body>
         <h1>Письмо-2020</h1>
+        <a href="/rules">Правила конкурса</a>
 
         <p>{{ state[0] }} {{ state[1] }} {{ state[2] }}</p>
 
@@ -15,10 +16,19 @@
         <a href="/login">Войти</a>
         {% endif %}
         
-        
         <p>Конкурс письменных работ на русском и английском языках</p>
         {% if logged %}
-        <a href="/takepart">Участвовать</a>
+
+            {% if state[3] == 1 %}
+            <a href="/takepart">Участвовать</a>
+            {% else %}
+                {% if state[3] == 2 %}
+                <a href="/top">Голосовать</a>
+                {% else %}
+                <a href="/results">Результаты</a>
+                {% endif %}
+            {% endif %}
+
         {% else %}
         <a href="/register">Зарегистрироваться</a>
         {% endif %}

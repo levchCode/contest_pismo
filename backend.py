@@ -22,11 +22,15 @@ def index():
 @app.route("/takepart")
 def takepart():
     logged = False
+
     if session.get('logged_user'):
         info = get_user(session.get('logged_user'))[1]
         logged = True
+        state = check_date()[3]
+        if state != 1:
+            return redirect(url_for('index'))
     else:
-        info = ''
+        return redirect(url_for('log_in'))
 
     tasks = get_tasks()
 
@@ -61,6 +65,9 @@ def log_out():
 
 @app.route("/top")
 def top():
+    state = check_date()[3]
+    if state == 1:
+        return redirect(url_for('index'))
     top = get_submitions()
     return render_template('top.html', top=top)
 
@@ -76,37 +83,56 @@ def subm():
 
 @app.route("/submit", methods=["GET", "POST"])
 def sub():
-    if request.method == "POST":
-        if session.get('logged_user'):
-            task_id = request.form.get('task_id')
-            answer = request.form.get('answer')
-            user_id = session.get('logged_user')
-            done = not request.form.get('done')
-            s_id = submit(user_id, task_id, answer, done)
-            return redirect(url_for('subm') + "?id=" + str(s_id))
-        else:
-            return redirect(url_for('log_in'))
+    state = check_date()[3]
+    if state != 1:
+        return redirect(url_for("index"))
     else:
         if session.get('logged_user'):
-            t_id = request.args.get('task_id')
-            task = get_task(t_id)
-            user = get_user(session.get('logged_user'))[1]
-
-            return render_template('submit.html', task=task, user=user)
+            if request.method == "POST":
+                task_id = request.form.get('task_id')
+                answer = request.form.get('answer')
+                user_id = session.get('logged_user')
+                done = not request.form.get('done')
+                s_id = submit(user_id, task_id, answer, done)
+                return redirect(url_for('subm') + "?id=" + str(s_id))
+            else:
+                t_id = request.args.get('task_id')
+                task = get_task(t_id)
+                user = get_user(session.get('logged_user'))[1]
+                return render_template('submit.html', task=task, user=user)
         else:
             return redirect(url_for('log_in'))
 
 @app.route("/comment", methods=["POST"])
 def leave_comment():
-    sub_id = request.form.get('sub_id')
-    user_id = session.get('logged_user')
-    g_s = request.form.get('grammar')
-    v_s = request.form.get('vocab')
-    tr_s = request.form.get('topic')
-    text = request.form.get('comment')
-    comment(sub_id, user_id, g_s, v_s, tr_s, text)
-    return redirect(url_for('subm') + "?id=" + sub_id)
+    state = check_date()[3]
+    if state != 2:
+        return redirect(url_for("index"))
+    else:
+        if session.get('logged_user'):
+            sub_id = request.form.get('sub_id')
+            user_id = session.get('logged_user')
+            g_s = request.form.get('grammar')
+            v_s = request.form.get('vocab')
+            tr_s = request.form.get('topic')
+            text = request.form.get('comment')
+            comment(sub_id, user_id, g_s, v_s, tr_s, text)
+            return redirect(url_for('subm') + "?id=" + sub_id)
+        else:
+            return redirect(url_for('log_in'))
 
+@app.route("/rules", methods=["GET"])
+def rules():
+    return render_template('rules.html')
+
+@app.route("/results", methods=["GET"])
+def r():
+    state = check_date()[3]
+    if state == 3:
+        r_1, r_2, r_3 = get_results()
+        return render_template('results.html', nom_1=r_1, nom_2=r_2, nom_3=r_3)
+    else:
+        return redirect(url_for('index'))
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

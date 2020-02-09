@@ -176,7 +176,6 @@ def update_avg(sub_id):
 
     sheet.values().update(spreadsheetId='1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg', valueInputOption="RAW", range=rag, body=body)
 
-
 def comment(sub_id, u_id, g_s, v_s, tr_s, comment):
     sheet = init()
 
@@ -208,8 +207,18 @@ def check_date():
         hours = str(int(secs / 3600))
         minutes = str(int(secs / 60) % 60)
         seconds = str(int(secs % 60))
-        return ["Идет конкурс. Осталось", hours + ":" + minutes + ":" + seconds]
+        return ["Идет конкурс. Осталось", hours + ":" + minutes + ":" + seconds, "", 1]
     elif today > start_vote and today < stop_vote:
-        return ["Голосование. Осталось", (stop_vote-today).days, "дней"]
+        return ["Голосование. Осталось", (stop_vote-today).days, "дней", 2]
     else:
-        return ["Конкурс начнется через", (start_contest-today).days, "дней"]
+        return ["Конкурс начнется через", (start_contest-today).days, "дней", 3]
+
+def get_results():
+    subs = get_submitions()
+    subs = pd.DataFrame.from_records(subs)
+
+    n_1 = subs.loc[subs[1] == "Перевод Английский-Русский"]
+    n_2 = subs.loc[subs[1] == "Перевод Русский-Английский"]
+    n_3 = subs.loc[subs[1] == "Сочинение"]
+
+    return n_1.values.tolist()[:3], n_2.values.tolist()[:3], n_3.values.tolist()[:3]
