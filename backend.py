@@ -1,12 +1,14 @@
 from flask import Flask, json, render_template, request, url_for, redirect, session
 import os
+import re
 from db_functions import *
 
 app = Flask(__name__, static_url_path='/static')
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 60*60
 app.secret_key = "S1h7D2jT0"
+email_regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
 
-@app.route("/")
+@app.route("/", methods=["GET"])
 def index():
     logged = False
     if session.get('logged_user'):
@@ -19,7 +21,7 @@ def index():
 
     return render_template('index.html', login_info=info, logged=logged, state=current_state)
 
-@app.route("/takepart")
+@app.route("/takepart", methods=["GET"])
 def takepart():
     logged = False
 
@@ -39,7 +41,10 @@ def takepart():
 @app.route("/register", methods=["GET", "POST"])
 def reg():
     if request.method == "POST":
-        register(request.form['nickname'], request.form['pwd'], request.form['email'])
+        if len(request.form['nickname']) > 3 and len(request.form['pwd']) > 6 and re.search(email_regex,request.form['email']):
+            register(request.form['nickname'], request.form['pwd'], request.form['email'])
+        else:
+            return redirect(url_for('index'))
         return redirect(url_for('log_in'))
     else:
         return render_template('register.html')
@@ -47,14 +52,17 @@ def reg():
 @app.route("/login", methods=["GET", "POST"])
 def log_in():
     if request.method == "POST":
-        user = request.form.get('nickname')
-        pwd = request.form.get('pwd')
-        _id = login(user, pwd)
-        if _id != 0:
-            session['logged_user'] = _id
-            return redirect(url_for('index'))
+        if len(request.form['nickname']) > 0 and len(request.form['pwd']) > 0:
+            user = request.form.get('nickname')
+            pwd = request.form.get('pwd')
+            _id = login(user, pwd)
+            if _id != 0:
+                session['logged_user'] = _id
+                return redirect(url_for('index'))
+            else:
+                return render_template('login.html')
         else:
-            return render_template('login.html')
+            return redirect(url_for('index'))
     else:
         return render_template('login.html')
 
@@ -63,7 +71,7 @@ def log_out():
     session['logged_user'] = False
     return redirect(url_for('index'))
 
-@app.route("/top")
+@app.route("/top", methods=["GET"])
 def top():
     state = check_date()[3]
     if state == 1:
@@ -71,7 +79,7 @@ def top():
     top = get_submitions()
     return render_template('top.html', top=top)
 
-@app.route("/submission")
+@app.route("/submission", methods=["GET"])
 def subm():
     if session.get('logged_user'):
         _id = request.args.get('id')
@@ -87,14 +95,17 @@ def sub():
     if state != 1:
         return redirect(url_for("index"))
     else:
-        if session.get('logged_user'):
+        user_id = session.get('logged_user')
+        if user_id:
             if request.method == "POST":
-                task_id = request.form.get('task_id')
-                answer = request.form.get('answer')
-                user_id = session.get('logged_user')
-                done = not request.form.get('done')
-                s_id = submit(user_id, task_id, answer, done)
-                return redirect(url_for('subm') + "?id=" + str(s_id))
+                if len(request.form.get('task_id')) > 0 and len(answer.form.get('answer')) > 0 and type(answer.form.get('answer')) == bool:
+                    task_id = request.form.get('task_id')
+                    answer = request.form.get('answer')
+                    done = not request.form.get('done')
+                    s_id = submit(user_id, task_id, answer, done)
+                    return redirect(url_for('subm') + "?id=" + str(s_id))
+                else:
+                    return redirect(url_for("index"))
             else:
                 t_id = request.args.get('task_id')
                 task = get_task(t_id)
@@ -109,15 +120,18 @@ def leave_comment():
     if state != 2:
         return redirect(url_for("index"))
     else:
-        if session.get('logged_user'):
-            sub_id = request.form.get('sub_id')
-            user_id = session.get('logged_user')
-            g_s = request.form.get('grammar')
-            v_s = request.form.get('vocab')
-            tr_s = request.form.get('topic')
-            text = request.form.get('comment')
-            comment(sub_id, user_id, g_s, v_s, tr_s, text)
-            return redirect(url_for('subm') + "?id=" + sub_id)
+        user_id = session.get('logged_user')
+        if user_id:
+            if type(request.form.get('sub_id')) == int and type(request.form.get('grammar')) == int and type(request.form.get('vocab')) == int and type(request.form.get('topic')) == int and len(request.form.get('comment')) > 0:
+                sub_id = request.form.get('sub_id')
+                g_s = request.form.get('grammar')
+                v_s = request.form.get('vocab')
+                tr_s = request.form.get('topic')
+                text = request.form.get('comment')
+                comment(sub_id, user_id, g_s, v_s, tr_s, text)
+                return redirect(url_for('subm') + "?id=" + sub_id)
+            else:
+                return redirect(url_for("index"))
         else:
             return redirect(url_for('log_in'))
 
