@@ -163,18 +163,17 @@ def update_avg(sub_id):
     grades = pd.DataFrame.from_records(rows)
     grades = grades.loc[grades[1] == str(sub_id)]
 
-    n_row = int(sub_id) + 1 
+    n_row = sub_id + 1 
     re_row = [grades[3].astype('int32').mean().item(), grades[4].astype('int32').mean().item(), grades[5].astype('int32').mean().item()]
+
   
     rag = "Submissions!E" + str(n_row) + ":G" + str(n_row)
 
     body = {
-        "values": [
-            re_row
-        ]
+        "values": [re_row]
     }
 
-    sheet.values().update(spreadsheetId='1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg', valueInputOption="RAW", range=rag, body=body)
+    result = sheet.values().update(spreadsheetId='1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg', valueInputOption="RAW", range=rag, body=body).execute()
 
 def comment(sub_id, u_id, g_s, v_s, tr_s, comment):
     sheet = init()
@@ -186,7 +185,7 @@ def comment(sub_id, u_id, g_s, v_s, tr_s, comment):
     row = [last_comment+1, sub_id, u_id, g_s, v_s, tr_s, comment]
 
     sheet.values().append(spreadsheetId='1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg', valueInputOption="RAW", range="CE", body={'values': [row]}).execute()
-    update_avg(sub_id)
+    update_avg(int(sub_id))
 
 def check_date():
     sheet = init()

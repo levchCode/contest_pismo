@@ -6,7 +6,7 @@ from db_functions import *
 app = Flask(__name__, static_url_path='/static')
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 60*60
 app.secret_key = "S1h7D2jT0"
-email_regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
+email_regex = r'^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
 
 @app.route("/", methods=["GET"])
 def index():
@@ -122,16 +122,13 @@ def leave_comment():
     else:
         user_id = session.get('logged_user')
         if user_id:
-            if type(request.form.get('sub_id')) == int and type(request.form.get('grammar')) == int and type(request.form.get('vocab')) == int and type(request.form.get('topic')) == int and len(request.form.get('comment')) > 0:
-                sub_id = request.form.get('sub_id')
-                g_s = request.form.get('grammar')
-                v_s = request.form.get('vocab')
-                tr_s = request.form.get('topic')
-                text = request.form.get('comment')
-                comment(sub_id, user_id, g_s, v_s, tr_s, text)
-                return redirect(url_for('subm') + "?id=" + sub_id)
-            else:
-                return redirect(url_for("index"))
+            sub_id = request.form.get('sub_id')
+            g_s = request.form.get('grammar')
+            v_s = request.form.get('vocab')
+            tr_s = request.form.get('topic')
+            text = request.form.get('comment')
+            comment(sub_id, user_id, g_s, v_s, tr_s, text)
+            return redirect(url_for('subm') + "?id=" + sub_id)
         else:
             return redirect(url_for('log_in'))
 
