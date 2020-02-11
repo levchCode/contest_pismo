@@ -11,15 +11,19 @@ email_regex = r'^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
 @app.route("/", methods=["GET"])
 def index():
     logged = False
-    if session.get('logged_user'):
-        info = get_user(session.get('logged_user'))[1]
+    submitted = False
+    work = []
+    user_id = session.get('logged_user')
+    if user_id != 0 and user_id != None:
+        info = get_user(user_id)[1]
+        submitted, work = check_if_submitted(user_id)
         logged = True
     else:
         info = ''
 
     current_state = check_date()
-
-    return render_template('index.html', login_info=info, logged=logged, state=current_state)
+    
+    return render_template('index.html', login_info=info, logged=logged, state=current_state, work=work, submitted=submitted)
 
 @app.route("/takepart", methods=["GET"])
 def takepart():
@@ -81,11 +85,11 @@ def top():
 
 @app.route("/submission", methods=["GET"])
 def subm():
-    if session.get('logged_user'):
+    user_id = session.get('logged_user')
+    if user_id != 0:
         _id = request.args.get('id')
-        user_id = session.get('logged_user')
-        work, comments, disable_form = get_sub(_id, user_id)
-        return render_template('submission.html', work=work[0], comments=comments, disable=disable_form)
+        work, comments, enable_form = get_sub(_id, user_id)
+        return render_template('submission.html', work=work[0], comments=comments, enable=enable_form)
     else:
         return redirect(url_for('log_in'))
 
@@ -98,14 +102,11 @@ def sub():
         user_id = session.get('logged_user')
         if user_id:
             if request.method == "POST":
-                if len(request.form.get('task_id')) > 0 and len(answer.form.get('answer')) > 0 and type(answer.form.get('answer')) == bool:
-                    task_id = request.form.get('task_id')
-                    answer = request.form.get('answer')
-                    done = not request.form.get('done')
-                    s_id = submit(user_id, task_id, answer, done)
-                    return redirect(url_for('subm') + "?id=" + str(s_id))
-                else:
-                    return redirect(url_for("index"))
+                task_id = request.form.get('task_id')
+                answer = request.form.get('answer')
+                done = request.form.get('notdone')
+                s_id = submit(user_id, task_id, answer, done)
+                return redirect(url_for('subm') + "?id=" + str(s_id))
             else:
                 t_id = request.args.get('task_id')
                 task = get_task(t_id)

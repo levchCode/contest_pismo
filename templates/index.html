@@ -20,7 +20,15 @@
         {% if logged %}
 
             {% if state[3] == 1 %}
-            <a href="/takepart">Участвовать</a>
+                {% if submitted %}
+                    {% if not work[7] %}
+                    <a href="/submit?c_id={{ work[0] }}">Продолжить работу</a>
+                    {% else %}
+                    <a href="/submission?id={{ work[0] }}">Моя работа</a>
+                    {% endif %}
+                {% else %}
+                    <a href="/takepart">Участвовать</a>
+                {% endif %}
             {% else %}
                 {% if state[3] == 2 %}
                 <a href="/top">Голосовать</a>

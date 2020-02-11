@@ -32,10 +32,9 @@ def init():
 
     return service.spreadsheets()
 
+sheet = init()
 # Регистрация участников
 def register(nick, pwd, email):
-    sheet = init()
-
     result = sheet.values().get(spreadsheetId="1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg", range="Users!A2:D").execute()
     rows = result.get('values', [])
     last_user = int(rows[len(rows)-1][0])
@@ -47,7 +46,6 @@ def register(nick, pwd, email):
 
 # Вход для участников
 def login(nick, pwd):
-    sheet = init()
 
     result = sheet.values().get(spreadsheetId="1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg", range="Users!A2:D").execute()
     rows = result.get('values', [])
@@ -58,12 +56,10 @@ def login(nick, pwd):
 
 # Получить все работы за конкурс
 def get_submitions():
-    sheet = init()
-
     users = sheet.values().get(spreadsheetId="1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg", range="Users!A2:D").execute()
     user_rows = users.get('values', [])
 
-    subs = sheet.values().get(spreadsheetId="1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg", range="Submissions!A2:G").execute()
+    subs = sheet.values().get(spreadsheetId="1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg", range="Submissions!A2:H").execute()
     subs_rows = subs.get('values', [])
 
     tasks = sheet.values().get(spreadsheetId="1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg", range="Tasks!A2:C").execute()
@@ -76,28 +72,31 @@ def get_submitions():
     joined = pd.merge(users, subs,  how='left', left_on=0, right_on=1).dropna()
     joined = pd.merge(joined, tasks,  how='left', left_on="2_y", right_on=0).dropna()
 
+    joined =  joined.loc[joined[7] == "TRUE"]
+
     needed_rows = joined[['0_y', 1, '1_x', 4, 5, 6]]
 
-    needed_rows["avg"] = (needed_rows[4].astype('int64') + needed_rows[5].astype('int64') + needed_rows[6].astype('int64'))/3
+    needed_rows["avg"] = (needed_rows[4].astype(float) + needed_rows[5].astype(float) + needed_rows[6].astype(float))/3
 
     needed_rows = needed_rows.sort_values(by='avg', ascending=False)
 
     return needed_rows.values.tolist()
 
 def submit(user_id, task_id, answer, complete):
-    sheet = init()
 
     result = sheet.values().get(spreadsheetId="1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg", range="Submissions!A2:G").execute()
     rows = result.get('values', [])
     last_sub = int(rows[len(rows)-1][0])
-    
-    row = [last_sub+1, user_id, task_id, answer, 0, 0, 0, complete]
+
+    if complete != "on":
+        row = [last_sub+1, user_id, task_id, answer, 0, 0, 0, "TRUE" ]
+    else:
+        row = [last_sub+1, user_id, task_id, answer, 0, 0, 0, "FALSE" ]
 
     sheet.values().append(spreadsheetId='1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg', valueInputOption="RAW", range="Submissions", body={'values': [row]}).execute()
     return last_sub+1
 
 def get_sub(sub_id, user_id):
-    sheet = init()
     
     users = sheet.values().get(spreadsheetId="1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg", range="Users!A2:D").execute()
     user_rows = users.get('values', [])
@@ -128,14 +127,13 @@ def get_sub(sub_id, user_id):
 
     user_commented = result_comments[result_comments['0_x'] == user_id]
 
-    return response.values.tolist(), result_comments.values.tolist(), not user_commented.empty
+    user_allowed = not ( not user_commented.empty or (result["0_x"].values.tolist()[0] == str(user_id)))
+
+    return response.values.tolist(), result_comments.values.tolist(), user_allowed
 
 def get_tasks():
-    sheet = init()
-
     result = sheet.values().get(spreadsheetId="1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg", range="Tasks!A2:C").execute()
     rows = result.get('values', [])
-
     return rows
 
 def get_task(t_id):
@@ -145,18 +143,14 @@ def get_task(t_id):
     return res.values.tolist()[0]
 
 def get_user(u_id):
-    sheet = init()
-
     result = sheet.values().get(spreadsheetId="1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg", range="Users!A2:D").execute()
     rows = result.get('values', [])
-
     users = pd.DataFrame.from_records(rows)
+    print(u_id)
     res = users.loc[users[0] == u_id]
     return res.values.tolist()[0]
 
 def update_avg(sub_id):
-    sheet = init()
-
     result = sheet.values().get(spreadsheetId="1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg", range="CE!A2:G").execute()
     rows = result.get('values', [])
 
@@ -173,11 +167,9 @@ def update_avg(sub_id):
         "values": [re_row]
     }
 
-    result = sheet.values().update(spreadsheetId='1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg', valueInputOption="RAW", range=rag, body=body).execute()
+    sheet.values().update(spreadsheetId='1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg', valueInputOption="RAW", range=rag, body=body).execute()
 
 def comment(sub_id, u_id, g_s, v_s, tr_s, comment):
-    sheet = init()
-
     result = sheet.values().get(spreadsheetId="1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg", range="CE!A2:G").execute()
     rows = result.get('values', [])
     last_comment = int(rows[len(rows)-1][0])
@@ -188,16 +180,14 @@ def comment(sub_id, u_id, g_s, v_s, tr_s, comment):
     update_avg(int(sub_id))
 
 def check_date():
-    sheet = init()
-
     result = sheet.values().get(spreadsheetId="1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg", range="Dates!A2:E").execute()
     row = result.get('values', [])[0]
 
-    start_contest = dt.strptime(row[0], "%d.%m.%Y %H:%M:%S")
-    stop_contest = dt.strptime(row[1], "%d.%m.%Y %H:%M:%S")
-    start_vote = dt.strptime(row[2], "%d.%m.%Y %H:%M:%S")
-    stop_vote = dt.strptime(row[3], "%d.%m.%Y %H:%M:%S") 
-    result = dt.strptime(row[4], "%d.%m.%Y %H:%M:%S") 
+    start_contest = dt.strptime(row[0], "%m/%d/%Y %H:%M:%S")
+    stop_contest = dt.strptime(row[1], "%m/%d/%Y %H:%M:%S")
+    start_vote = dt.strptime(row[2], "%m/%d/%Y %H:%M:%S")
+    stop_vote = dt.strptime(row[3], "%m/%d/%Y %H:%M:%S") 
+    result = dt.strptime(row[4], "%m/%d/%Y %H:%M:%S") 
     today = dt.now()
 
     if today > start_contest and today < stop_contest:
@@ -210,14 +200,26 @@ def check_date():
     elif today > start_vote and today < stop_vote:
         return ["Голосование. Осталось", (stop_vote-today).days, "дней", 2]
     else:
-        return ["Конкурс начнется через", (start_contest-today).days, "дней", 3]
+        return ["Конкурс начнется через", abs((start_contest-today).days), "дней", 3]
 
 def get_results():
     subs = get_submitions()
     subs = pd.DataFrame.from_records(subs)
 
-    n_1 = subs.loc[subs[1] == "Перевод Английский-Русский"]
-    n_2 = subs.loc[subs[1] == "Перевод Русский-Английский"]
-    n_3 = subs.loc[subs[1] == "Сочинение"]
+    n_1 = subs.loc[(subs[1] == "Перевод Английский-Русский")]
+    n_2 = subs.loc[(subs[1] == "Перевод Русский-Английский")] 
+    n_3 = subs.loc[(subs[1] == "Сочинение")]
 
     return n_1.values.tolist()[:3], n_2.values.tolist()[:3], n_3.values.tolist()[:3]
+
+def check_if_submitted(user_id):
+    subs = sheet.values().get(spreadsheetId="1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg", range="Submissions!A2:H").execute()
+    sub_rows = subs.get('values', [])
+    sub_rows = pd.DataFrame.from_records(sub_rows) 
+    sub_rows = sub_rows.loc[sub_rows[1] == str(user_id)]
+    sub_rows[7].astype(bool)
+
+    if not sub_rows.empty:
+        return not sub_rows.empty, sub_rows.values.tolist()[0]
+    else:
+        return not sub_rows.empty, []
