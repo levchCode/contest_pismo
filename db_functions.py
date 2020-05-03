@@ -146,7 +146,6 @@ def get_user(u_id):
     result = sheet.values().get(spreadsheetId="1Iw5g-FcjnUp2X0ErIdiffpLzCwcU4u4HAeTtyvAo4Gg", range="Users!A2:D").execute()
     rows = result.get('values', [])
     users = pd.DataFrame.from_records(rows)
-    print(u_id)
     res = users.loc[users[0] == u_id]
     return res.values.tolist()[0]
 
