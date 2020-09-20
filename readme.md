@@ -21,6 +21,7 @@
 - Run:
 	- Windows -> `python app/main.py`
 	- Linux ->`python3 app/main.py`
+- Open `http://localhost:5000/`
 ------------
 
 ### Run with Docker: ###
@@ -28,6 +29,7 @@
 - Install Docker
 - Run `docker build -t server . -f server.dockerfile`
 - Run `docker run -d -p 5000:5000 server `
+- Open `http://localhost:5000/`
 ------------
 ### Run with Docker-compose: ###
 - Install Docker
