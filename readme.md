@@ -1,5 +1,10 @@
 ### Steps to install: ###
-- Create `./app/secret.py`, that must contain `app_secret_key="test"`
+- Create `./app/secret.py`, that must contain 
+```
+app_secret_key="test"
+DB_link = "Atlas URL"
+DB_name = "test"
+```
 - Run in CMD/Terminal `pip install virtualenv`
 - Create virtualenv with:
 	- Windows -> `virtualenv venv --python=python`
