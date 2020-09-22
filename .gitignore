@@ -19,4 +19,3 @@ venv.bak/
 .vscode/
 credentials.json
 token.pickle
-secret.py
