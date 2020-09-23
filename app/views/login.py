@@ -17,11 +17,10 @@ def login():
             result = loginUser(request.form['login'], request.form['password'])
 
             if result:
-                flash('Success', 'success')
+                flash(f'Добро пожаловать, {request.form["login"]}', 'success')
                 return redirect(url_for('profile', login = request.form['login']))
             else:
-                flash('Error', 'danger')
-                return redirect(url_for('login'))
+                flash('Такого пользователя не существует', 'danger')
         
         elif request.form['type'] == 'signup':
             good_fields = True
@@ -38,9 +37,15 @@ def login():
                 good_fields = False
 
             if good_fields:               
-                addUser(request.form['name'], request.form['login'], request.form['email'], request.form['password'])
-                return redirect(url_for('profile', login = request.form['login']))
-            else:
-                return redirect(url_for('login'))
+                result = addUser(request.form['name'], request.form['login'], request.form['email'], request.form['password'])
+                print((result))
+                if result:
+                    flash(f'Добро пожаловать, {request.form["login"]}', 'success')
+                    return redirect(url_for('profile', login = request.form['login']))
+                else:
+                    flash('Логин или почта уже используются в системе', 'danger')
+
+        return render_template('login.html')
+
     else:
         return render_template('login.html')
