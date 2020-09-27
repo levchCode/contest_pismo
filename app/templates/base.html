@@ -14,7 +14,7 @@
   
   <body class="text-center">
     
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="mb-4 navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
           <a class="navbar-brand" href="/">Письмо 2020</a>
           
@@ -25,7 +25,15 @@
                 <a class="nav-link" href="/rules">Правила</a>
                 <a class="nav-link" href="/support">Помощь</a>
                 {%if current_user.is_authenticated%}
-                    <a class="nav-link" href="/profile/{{ current_user.login }}">{{ current_user.login }}</a>
+                    <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ current_user.login }}
+                      </a>
+                      <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/profile/{{ current_user.login }}">Профиль</a>
+                        <a class="dropdown-item" href="/logout">Выход</a>
+                      </div>
+                    </li>
                 {%else%}
                     <a class="nav-link" href="/login">Вход/Регистрация</a>
                 {%endif%}
@@ -52,16 +60,14 @@
            100% {opacity: 0;}
         }
         
-        .form-signin {
-            width: 100%;
-            max-width: 330px;
-            padding: 15px;
+        .form-nav {
+          width: 100%;
+            max-width: 350px;
             margin: auto;
         }
-
-        .centered {
+        .form-signin {
             width: 100%;
-            max-width: 1000px;
+            max-width: 350px;
             padding: 15px;
             margin: auto;
         }

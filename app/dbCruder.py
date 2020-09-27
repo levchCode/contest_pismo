@@ -1,33 +1,46 @@
+from werkzeug.security import generate_password_hash, check_password_hash
 from secret import DB_link, DB_name
-from flask_pymongo import pymongo
-from objects.user import User
+from app import *
+from objects.users import User
 
 
-# DB connection
-client = pymongo.MongoClient(DB_link)
-db = client.get_database(DB_name)
-
-def addUser(user):
+def addUser(name, login, email, password):
     try:
-        result = db.Users.insert_one({"_id": user._id, "name": user.name, "password": user.password})
-        return bool(result)
-    except pymongo.errors.OperationFailure:
+        password = generate_password_hash(password)
+        user = User(name=name, login=login, email=email, password=password).save()
+        login_user(user, remember=True)
+        return True
+
+    except:
         return False
 
-def updateUser(user):
+def loginUser(login, password):
     try:
-        result = db.Users.update_one({"_id": user._id}, {"$set":{"name": user.name, "password": user.password}})
-        print(result.modified_count)
-        return result.modified_count
-    except pymongo.errors.OperationFailure:
+        user = User.objects.get(login=login)
+
+        if check_password_hash(user.password, password):
+            login_user(user, remember=True)
+            return {"name": user['name'], 
+                    "login": user['login'], 
+                    "email": user['email'], 
+                    "password": user['password']}
+    except:
         return False
 
-def getUser(_id):
+def updateUser(name, login, email, password):
     try:
-        result = db.Users.find_one({"_id": _id})
-        if result:
-            return User(result['_id'], result['name'], result['password'])
-        else:
-            return False
-    except pymongo.errors.OperationFailure:
+        user = User.objects.get(login=login).update_one(name=name, login=login, email=email, password=password)
+        return True
+
+    except:
+        return False
+
+def getUser(login):
+    try:
+        user = User.objects.get(login=login, password=password)
+        return {"name": user['name'], 
+                "login": user['login'], 
+                "email": user['email'], 
+                "password": user['password']}
+    except:
         return False
