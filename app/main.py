@@ -1,4 +1,5 @@
 from app import *
+import os
 from views import index, participate, about, rules, contacts, support, profile, login, logout, p404
 
 
