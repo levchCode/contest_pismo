@@ -14,34 +14,41 @@ def login():
 
         # Sign in logic
         if request.form['type'] == 'signin':
-            result = loginUser(request.form['login'], request.form['password'])
+            login = request.form['login']
+            password = request.form['password']
+            result = loginUser(login, password)
 
             if result:
-                flash(f'Добро пожаловать, {request.form["login"]}', 'success')
-                return redirect(url_for('profile', login = request.form['login']))
+                flash(f'Добро пожаловать, {login}', 'success')
+                return redirect(url_for('profile', login = login))
             else:
                 flash('Такого пользователя не существует', 'danger')
         
         elif request.form['type'] == 'signup':
             good_fields = True
-            if len(request.form['login']) < 4:
+            name = request.form['name']
+            login = request.form['login']
+            password = request.form['password']
+            email = request.form['email']
+
+            if len(login) < 4:
                 flash('Длина логина должна быть больше 3ех символов', 'danger')
                 good_fields = False
 
-            if len(request.form['password']) < 7:
+            if len(password) < 7:
                 flash('Длина пароля должна быть больше 6ти символов', 'danger')
                 good_fields = False
                 
-            if not re.search(email_regexp, request.form['email']):
+            if not re.search(email_regexp, email):
                 flash('Укажите верный email адрес', 'danger')
                 good_fields = False
 
             if good_fields:               
-                result = addUser(request.form['name'], request.form['login'], request.form['email'], request.form['password'])
+                result = addUser(name, login, email, password)
                 print((result))
                 if result:
-                    flash(f'Добро пожаловать, {request.form["login"]}', 'success')
-                    return redirect(url_for('profile', login = request.form['login']))
+                    flash(f'Добро пожаловать, {login}', 'success')
+                    return redirect(url_for('profile', login = login))
                 else:
                     flash('Логин или почта уже используются в системе', 'danger')
 
