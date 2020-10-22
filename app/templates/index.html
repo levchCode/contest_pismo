@@ -3,14 +3,15 @@
 
 {% block title %}
     <title>Главная | Письмо2020</title>
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}"/>
 {% endblock %}
 
 
 {% block  main %}
-    <div class="index_gradient">
-        <div class="index_left_align"> 
+    <div class="gradient">
+        <div class="left_align"> 
             <h3> Федеральная сеть школ английского языка Вильяма Рейли представляет проект </h3>
-            <div class="index_left_align_footer">
+            <div class="left_align_footer">
                 <hr/>
                 <h5 class="mb-5"> Письмо 2020 </h5>
                 <a href="/participate" class="btn btn-primary mr-2">Участвовать</a>
@@ -18,7 +19,7 @@
             </div>
         </div>
 
-        <div class="index_right_align">
+        <div class="right_align">
             <img src="{{ url_for('static', filename='img/a-group-of-students.jpg') }}" class="rounded img-fluid">
         </div>
     </div>
