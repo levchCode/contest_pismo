@@ -58,39 +58,11 @@
 
     {%endblock%}
 
-    <style>
-        .alert {
-          animation-delay: 2s;
-          animation-duration: 3s;
-          animation-fill-mode: both;
-          animation-name: fadeOut;
-          align-content: bottom;
-        }
-        @keyframes fadeOut {
-           0% {opacity: 1;}
-           100% {opacity: 0;}
-        }
-        
-        .form-nav {
-          width: 100%;
-            max-width: 350px;
-            margin: auto;
-        }
-        .form-signin {
-            width: 100%;
-            max-width: 350px;
-            padding: 15px;
-            margin: auto;
-        }
+    <footer class="fixed-bottom">
+      <p> William Reiley </p>
+      <p> All Rights Reserved © 2020 </p>
+  </footer>     
 
-        th, td {
-            background-color: #eeeeee;
-        }
-  
-     </style>
-     
-
-    <!-- Flashed alerts -->
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
       <div style="position: absolute; top: 55px; right: 0;">
