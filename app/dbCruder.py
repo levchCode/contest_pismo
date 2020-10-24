@@ -2,6 +2,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from secret import DB_link, DB_name
 from app import *
 from objects.users import User
+from objects.works import Work
+from objects.themes import Theme
 
 
 def addUser(name, login, email, password):
@@ -37,10 +39,25 @@ def updateUser(name, login, email, password):
 
 def getUser(login):
     try:
-        user = User.objects.get(login=login, password=password)
+        user = User.objects.get(login=login)
         return {"name": user['name'], 
                 "login": user['login'], 
                 "email": user['email'], 
                 "password": user['password']}
+    except:
+        return False
+
+
+def addTheme(login, theme):
+    try:
+        theme = Theme(login=login, theme=theme).save()
+        return True
+    except:
+        return False
+
+def addWork(login, title, work):
+    try:
+        work = Work(login=login, title=title, work=work, status="На рассмотрении").save()
+        return True
     except:
         return False

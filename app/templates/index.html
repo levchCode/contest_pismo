@@ -14,7 +14,11 @@
             <div class="left_align_footer">
                 <hr/>
                 <h5 class="mb-5"> Письмо 2020 </h5>
-                <a href="/participate" class="btn btn-primary mr-2">Участвовать</a>
+                {% if current_user.is_authenticated %}
+                    <a href="/participate" class="btn btn-primary mr-2">Участвовать</a>
+                {% else %}
+                    <a href="/login" class="btn btn-primary mr-2">Участвовать</a>
+                {% endif %}
                 <a href="/support" class="btn btn-outline-light">Возникли проблемы?</a>
             </div>
         </div>
