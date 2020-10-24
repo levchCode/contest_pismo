@@ -1,0 +1,21 @@
+footer {
+    background-color: #2479EC;
+}
+footer p {
+    color: white;
+    font-size: 16px;
+}
+
+
+/* For alerts */
+.alert {
+    animation-delay: 2s;
+    animation-duration: 3s;
+    animation-fill-mode: both;
+    animation-name: fadeOut;
+    align-content: bottom;
+  }
+  @keyframes fadeOut {
+     0% {opacity: 1;}
+     100% {opacity: 0;}
+  }

@@ -2,5 +2,5 @@ from app import *
 
 
 @app.errorhandler(404)
-def page_not_found(e):
+def p404(e):
     return render_template('p404.html')

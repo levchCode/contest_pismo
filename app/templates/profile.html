@@ -3,10 +3,114 @@
 
 {% block title %}
 <!-- TODO: Dynamic title that consists of participant's name -->
-    <title>Профиль | Письмо2020</title>
+    <title>{{ user.login }} | Письмо2020</title>
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}"/>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/profile.js') }}"></script>
 {% endblock %}
 
 
 {% block  main %}
+    <div class="card">
 
+        <h6>Личный кабинет</h6>
+
+        <div class="row g-0 text-left align-items-center">
+          <div class="w-50">
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div>
+                            <img class="rounded-circle img-circle w-25 mb-3" src="https://yt3.ggpht.com/a/AATXAJyjTcWPb5mfd8n7aShSGlvpO6MQBUdkJqI6iA=s900-c-k-c0xffffffff-no-rj-mo">
+                            <h6>ФИО</h6>
+                            <p>{{ user.name }}</p>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div>
+                            <h6>Уровень</h6>
+                            <p>Beginner</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+          </div>
+          {%if current_user.is_authenticated and current_user.login == user.login%}
+            <div class="w-50">
+              <div class="card-body">
+                  <button type="button" class="btn btn-primary btn-block mb-2" data-toggle="modal" data-target="#shapeTheme">Предложить тему</button>
+                  <button type="button" class="btn btn-primary btn-block mb-2" data-toggle="modal" data-target="#shapeLoadWork">Загрузить работу</button>
+                  <button type="button" class="btn btn-primary btn-block mb-2" data-toggle="modal" data-target="#shapeEditProfile">Редактировать профиль</button>
+              </div>
+            </div>
+          {%endif%}
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="shapeTheme" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+
+            <div class="modal-body">
+                <h6>Предложить тему</h6>
+                <form class="form-signin" method="POST">
+                    <input type="hidden" name="type" value="theme">
+
+                    <label for="inputName" class="sr-only">Название темы</label>
+                    <input name = "theme" class="form-control mt-2" placeholder="Название темы"  autofocus="" required="">
+                    <button class="btn btn-lg btn-primary btn-block mt-4" type="submit">Предложить</button>
+                </form>
+            </div>
+  
+          </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade bd-example-modal-xl" id="shapeLoadWork" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+          <div class="modal-content">
+
+            <div class="modal-body">
+                <h6>Загрузить работу</h6>
+                
+                <form class="form" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="type" value="work">
+
+                    <label for="inputName" class="sr-only">Название сочинения</label>
+                    <input name="title" class="form-control mt-2 mb-2" placeholder="Название темы"  autofocus="" required="">
+
+                    <div class="row align-items-center">
+                        <div class="col">
+                          <textarea name="work" class="form-control" id="textarea" onchange="checkForm()" required=""></textarea>
+                        </div>
+                        <div class="col-1">
+                            <span class="align-middle">или</span>                            
+                        </div>
+                        <div class="col rightblock">
+                          <input name="work" class="form-control" type="file" id="file" onchange="checkForm()" required=""/>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-lg btn-primary btn-block mt-4" type="submit">Отправить</button>
+                </form>
+
+                
+            </div>
+  
+          </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="shapeEditProfile" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+
+            <div class="modal-body">
+                <h6>Редактирование</h6>
+            </div>
+  
+          </div>
+        </div>
+    </div>
 {% endblock %}

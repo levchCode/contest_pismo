@@ -1,4 +1,4 @@
-.index_gradient {
+.gradient {
     background: #fefcea; /* Для старых браузров */
     background: linear-gradient(to top right, #80D0C7, #0093E9);
     display: inline-block;
@@ -6,7 +6,7 @@
     padding: 50px;
    }
 
-.index_left_align {
+.left_align {
     color: white;
     text-align: left;
     float: left;
@@ -16,19 +16,19 @@
     padding: 2.5%;
 }
 
-.index_left_align_footer {
+.left_align_footer {
     margin-top: 200px;
     text-align: bottom;
 }
 
-.index_left_align_footer hr {
+.left_align_footer hr {
     height: 5px!important;
     width: 80px!important;
     size: 10px!important;
     opacity: 1!important;
 }
 
-.index_right_align {
+.right_align {
     float: left;
     width: 50%;
     padding: 2.5%;
