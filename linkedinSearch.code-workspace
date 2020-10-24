@@ -1,0 +1,24 @@
+{
+    "folders": [
+        {
+            "name": "Configs (Root)",
+            "path": "."
+        },
+        {
+            "name": "App",
+            "path": "app"
+        },
+    ],
+    "settings": {
+        "files.exclude": {
+            "**/.git": true,
+        },
+        "editor.tabSize": 4,
+    },
+    "extensions": {
+        "recommendations": [
+            "ms-azuretools.vscode-docker",
+            "mhutchie.git-graph",
+        ]
+    }
+}

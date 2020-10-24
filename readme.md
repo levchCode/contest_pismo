@@ -5,6 +5,13 @@ app_secret_key="test"
 DB_link = "Atlas URL"
 DB_name = "test"
 ```
+LETS USE PIPENV
+
+- Run in CMD/Terminal `pip install pipenv`
+- pipenv shell
+- pipenv install ()
+
+
 - Run in CMD/Terminal `pip install virtualenv`
 - Create virtualenv with:
 	- Windows -> `virtualenv venv --python=python`
@@ -29,15 +36,18 @@ DB_name = "test"
 - Open `http://localhost:5000/`
 ------------
 
-### Run with Docker: ###
-
-- Install Docker
-- Run `docker build -t server . -f server.dockerfile`
-- Run `docker run -d -p 5000:5000 server `
-- Open `http://localhost:5000/`
-------------
 ### Run with Docker-compose: ###
 - Install Docker
-- Run `docker-compose up`
+- Run `docker-compose up --build`
+- NOTE --build flag may be removed if there is no need to rebuild container
 - Open `http://localhost:5000/`
 ------------
+
+### Run only DB container
+
+`docker-compose up -d mongo`
+
+To run all in containers - change .env file connection string to:
+`mongodb://mongo:27017`
+
+`server = "gunicorn -b=0.0.0.0:8443 -w=4 bot.app:app"`
