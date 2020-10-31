@@ -1,6 +1,13 @@
+from werkzeug.utils import secure_filename
 from app import *
+import os
 
 from dbCruder import getUser
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/profile/<login>', methods = ['GET', 'POST'])
 def profile(login):
@@ -10,7 +17,7 @@ def profile(login):
                 theme = request.form['theme']
 
                 if len(theme) < 3 and len(theme) > 100:
-                    flash(f'Нельзя предложить тему больше двух раз', 'danger')
+                    flash(f'Тема должна быть от 3 до 100 символов', 'danger')
 
                 result = addTheme(current_user.login, theme)
 
@@ -22,21 +29,36 @@ def profile(login):
                 return redirect(url_for('profile', login = login))
 
 
-            # elif request.form['type'] == 'work':
-            #     try:
-            #         file = request.files['work']
-            #         for i in file.stream:
-            #             print(i.decode('ascii'))
-            #     except:
-            #         file = request.form['work']
-            #         print(file)
+            elif request.form['type'] == 'work':
+                # try:
+                file = request.files['work']
+                if file.filename == '':
+                    flash('No selected file')
+                if file and allowed_file(file.filename):
+                    filename = current_user.login + '.' + file.filename.split('.')[1]
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+                    # Just not working correctly now
+                    work = ""
+                    for i in file.stream:
+                        work += i.decode('ascii')
+
+                    addWork(login, request.form['title'], work)
+                # for i in file.stream:
+                #     print(i.decode('ascii'))
+                # except:
+                #     work = request.form['work']
+                #     addWork(login, request.form['title'], work)
+                
+                return redirect(url_for('profile', login = login))
 
         else:
             return redirect(url_for('login'))
 
     user = getUser(login)
+    print(user)
     if getUser(login):
-        return render_template('profile.html', user=user)
+        return render_template('profile.html', user = user)
     else:
         return make_response(render_template('p404.html'), 404)
     

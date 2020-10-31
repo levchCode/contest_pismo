@@ -40,10 +40,12 @@ def updateUser(name, login, email, password):
 def getUser(login):
     try:
         user = User.objects.get(login=login)
+        works = Work.objects(login=login)
         return {"name": user['name'], 
                 "login": user['login'], 
                 "email": user['email'], 
-                "password": user['password']}
+                "password": user['password'],
+                "works": [[work['theme'], work['title'], work['status']] for work in works]}
     except:
         return False
 
@@ -61,3 +63,6 @@ def addWork(login, title, work):
         return True
     except:
         return False
+
+def getWorks(login):
+    return Work.objects(login=login)
