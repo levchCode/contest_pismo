@@ -39,6 +39,7 @@
               <div class="card-body">
                   <button type="button" class="btn btn-primary btn-block mb-2" data-toggle="modal" data-target="#shapeTheme">Предложить тему</button>
                   <button type="button" class="btn btn-primary btn-block mb-2" data-toggle="modal" data-target="#shapeLoadWork">Загрузить работу</button>
+                  <button type="button" class="btn btn-primary btn-block mb-2" data-toggle="modal" data-target="#shapeShowWorks">Мои работы</button>
                   <button type="button" class="btn btn-primary btn-block mb-2" data-toggle="modal" data-target="#shapeEditProfile">Редактировать профиль</button>
               </div>
             </div>
@@ -81,12 +82,12 @@
                     <input name="title" class="form-control mt-2 mb-2" placeholder="Название темы"  autofocus="" required="">
 
                     <div class="row align-items-center">
-                        <div class="col">
+                        <!-- <div class="col"> будет раскомменчено после 02.11.20
                           <textarea name="work" class="form-control" id="textarea" onchange="checkForm()" required=""></textarea>
                         </div>
                         <div class="col-1">
                             <span class="align-middle">или</span>                            
-                        </div>
+                        </div> -->
                         <div class="col rightblock">
                           <input name="work" class="form-control" type="file" id="file" onchange="checkForm()" required=""/>
                         </div>
@@ -102,15 +103,43 @@
         </div>
     </div>
 
-    <div class="modal fade" id="shapeEditProfile" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
 
-            <div class="modal-body">
-                <h6>Редактирование</h6>
-            </div>
-  
+    <div class="modal fade bd-example-modal-xl" id="shapeShowWorks" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+
+          <div class="modal-body">
+              <h6>Мои работы</h6>       
+              
+              {% if user['works'] %}
+                {% for i in user['works'] %}
+                <div class="card float-left" style="margin: 5px">
+                  <div class="card-body">
+                    <button type="button" class="btn btn-outline-primary mb-4">{{ i[2] }}</button>
+                    <h5 class="card-title">{{ i[1] }}</h5>
+                    <p class="card-text"> 2020 </p>
+                  </div>
+                </div>
+                {% endfor %}
+              {% else %}
+                <h5>У вас пока нет загруженных работ</h5>
+              {% endif %}
           </div>
+
         </div>
-    </div>
+      </div>
+  </div>
+
+
+  <div class="modal fade" id="shapeEditProfile" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+          <div class="modal-body">
+              <h6>Редактирование</h6>
+          </div>
+
+        </div>
+      </div>
+  </div>
 {% endblock %}
