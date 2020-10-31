@@ -35,17 +35,15 @@ def profile(login):
                 if file.filename == '':
                     flash('No selected file')
                 if file and allowed_file(file.filename):
+
+                    work = ""
+                    for i in file.stream:
+                        work += i.decode('utf-8')
+                    addWork(login, request.form['title'], work)
+
                     filename = current_user.login + '.' + file.filename.split('.')[1]
                     file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-                    # Just not working correctly now
-                    work = ""
-                    for i in file.stream:
-                        work += i.decode('ascii')
-
-                    addWork(login, request.form['title'], work)
-                # for i in file.stream:
-                #     print(i.decode('ascii'))
                 # except:
                 #     work = request.form['work']
                 #     addWork(login, request.form['title'], work)
@@ -56,7 +54,6 @@ def profile(login):
             return redirect(url_for('login'))
 
     user = getUser(login)
-    print(user)
     if getUser(login):
         return render_template('profile.html', user = user)
     else:

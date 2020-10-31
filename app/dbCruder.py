@@ -4,6 +4,7 @@ from app import *
 from objects.users import User
 from objects.works import Work
 from objects.themes import Theme
+import uuid
 
 
 def addUser(name, login, email, password):
@@ -45,7 +46,7 @@ def getUser(login):
                 "login": user['login'], 
                 "email": user['email'], 
                 "password": user['password'],
-                "works": [[work['theme'], work['title'], work['status']] for work in works]}
+                "works": [[work['url'], work['theme'], work['title'], work['status']] for work in works]}
     except:
         return False
 
@@ -59,8 +60,21 @@ def addTheme(login, theme):
 
 def addWork(login, title, work):
     try:
-        work = Work(login=login, title=title, work=work, status="На рассмотрении").save()
+        url = str(uuid.uuid4())
+        work = Work(url=url, login=login, title=title, work=work, status="На рассмотрении", rating=0).save()
         return True
+    except:
+        return False
+
+def getWork(url):
+    try:
+        work = Work.objects.get(url=url)
+        return {"login": work['login'],
+                "theme": work['theme'],
+                "title": work['title'],
+                "work": work['work'],
+                "status": work['status'],
+                "rating": work['rating']}
     except:
         return False
 
