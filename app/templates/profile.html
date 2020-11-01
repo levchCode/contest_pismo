@@ -34,7 +34,7 @@
                 </ul>
             </div>
           </div>
-          {%if current_user.is_authenticated and current_user.login == user.login%}
+          {% if current_user.is_authenticated and current_user.login == user.login %}
             <div class="w-50">
               <div class="card-body">
                   <button type="button" class="btn btn-primary btn-block mb-2" data-toggle="modal" data-target="#shapeTheme">Предложить тему</button>
@@ -43,7 +43,13 @@
                   <button type="button" class="btn btn-primary btn-block mb-2" data-toggle="modal" data-target="#shapeEditProfile">Редактировать профиль</button>
               </div>
             </div>
-          {%endif%}
+          {% else %}
+            <div class="w-50">
+              <div class="card-body">
+                  <button type="button" class="btn btn-primary btn-block mb-2" data-toggle="modal" data-target="#shapeShowWorks">Посмотреть работы участника</button>
+              </div>
+            </div>
+          {% endif %}
         </div>
     </div>
 
@@ -109,17 +115,23 @@
         <div class="modal-content">
 
           <div class="modal-body">
-              <h6>Мои работы</h6>       
+            {% if current_user.is_authenticated and current_user.login == user.login %}
+              <h6>Мои работы</h6>
+            {% else %}
+              <h6>Работы участника</h6>
+            {% endif %}
               
               {% if user['works'] %}
                 {% for i in user['works'] %}
-                <div class="card float-left" style="margin: 5px">
-                  <div class="card-body">
-                    <button type="button" class="btn btn-outline-primary mb-4">{{ i[2] }}</button>
-                    <h5 class="card-title">{{ i[1] }}</h5>
-                    <p class="card-text"> 2020 </p>
+                <a href="../work/{{ i[0] }}">
+                  <div class="card float-left" style="margin: 5px">
+                    <div class="card-body">
+                      <button type="button" class="btn btn-outline-primary mb-4">{{ i[3] }}</button>
+                      <h5 class="card-title">{{ i[2] }}</h5>
+                      <p class="card-text"> 2020 </p>
+                    </div>
                   </div>
-                </div>
+                </a>
                 {% endfor %}
               {% else %}
                 <h5>У вас пока нет загруженных работ</h5>

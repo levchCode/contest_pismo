@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    <title>Просмотр работы | Письмо2020</title>
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/work.css') }}"/>
+{% endblock %}
+
+
+{% block  main %}
+<div class="card ">
+
+    <h6>Просмотр работы</h6>
+
+    <div class="row g-0 text-left align-items-center">
+      <div class="col-8">
+        <div class="card-body">
+            <textarea class="form-control" rows="3" readonly>{{ work['work'] }}</textarea>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="card-body">
+            <div class="row g-0 text-left align-items-start mb-3">
+                <div class="col-2">
+                    <img class="rounded-circle img-circle" style="width: 50px;" src="https://yt3.ggpht.com/a/AATXAJyjTcWPb5mfd8n7aShSGlvpO6MQBUdkJqI6iA=s900-c-k-c0xffffffff-no-rj-mo">
+                </div>
+                <div class="col-10">
+                    <h5 class="pl-3">{{ user.name }}</h5>
+                </div>
+            </div>
+            <hr>
+            {%if current_user.is_authenticated and current_user.login != user.login%}
+                <div class="row w-50 text-center align-items-center float-left mr-5">
+                    <div class="col">
+                        <button type="button" class="btn btn-outline-success">
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-caret-up-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+                              </svg>
+                        </button>
+                    </div>
+                    <div class="col">{{ work['rating'] }}</div>
+                    <div class="col">
+                        <button type="button" class="btn btn-outline-danger">
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-caret-down-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                              </svg>
+                        </button>
+                    </div>
+                </div>
+            {%endif%}
+            <button type="button" class="btn btn-primary float-left mb-3">Скачать работу</button>
+        </div>
+      </div>
+      
+    </div>
+</div>
+{% endblock %}
