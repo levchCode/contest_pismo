@@ -41,9 +41,6 @@ def profile(login):
                         work += i.decode('utf-8')
                     addWork(login, request.form['title'], work)
 
-                    filename = current_user.login + '.' + file.filename.split('.')[1]
-                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
                 # except:
                 #     work = request.form['work']
                 #     addWork(login, request.form['title'], work)
