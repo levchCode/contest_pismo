@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    <title>Рейтинг | Письмо2020</title>
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/rating.css') }}"/>
+{% endblock %}
+
+
+{% block  main %}
+    <div class="card">
+        <table class="table mb-0">
+            <thead>
+              <tr>
+                <th scope="col">ФИО</th>
+                <th scope="col">Рейтинг</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for i in works %}
+                    <tr>
+                        <td>{{ i['name'] }}</td>
+                        <td>{{ i['rating'] }}</td>
+                        <td><a href="../work/{{ i['url'] }}" class="btn btn-primary mr-2">Оценить</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+    </div>
+{% endblock %}

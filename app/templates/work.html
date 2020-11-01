@@ -8,14 +8,14 @@
 
 
 {% block  main %}
-<div class="card ">
+<div class="card mb-3">
 
-    <h6>Просмотр работы</h6>
+    <h6 class="mt-2">{{ work['title'] }}</h6>
 
-    <div class="row g-0 text-left align-items-center">
+    <div class="row g-0 text-left align-items-start">
       <div class="col-8">
         <div class="card-body">
-            <textarea class="form-control" rows="3" readonly>{{ work['work'] }}</textarea>
+            <textarea class="form-control" rows="15" readonly>{{ work['work'] }}</textarea>
         </div>
       </div>
       <div class="col-4">
