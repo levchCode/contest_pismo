@@ -24,7 +24,7 @@ def profile(login):
                 if result:
                     flash(f'Тема успешно предложена', 'success')
                 else:
-                    flash(f'Нельзя предложить тему больше двух раз', 'danger')
+                    flash(f'Тему можно предложить только один раз', 'danger')
 
                 return redirect(url_for('profile', login = login))
 
