@@ -1,5 +1,6 @@
 from werkzeug.utils import secure_filename
 from app import *
+import docx2txt
 import os
 
 from dbCruder import getUser
@@ -33,14 +34,28 @@ def profile(login):
                 # try:
                 file = request.files['work']
                 if file.filename == '':
-                    flash('No selected file')
+                    flash('Не выбран файл', 'danger')
                 if file and allowed_file(file.filename):
+                    
+                    extension = file.filename.split('.')[1]
+                    if extension == 'txt':
+                        work = ""
+                        for i in file.stream:
+                            work += i.decode('utf-8')
 
-                    work = ""
-                    for i in file.stream:
-                        work += i.decode('utf-8')
-                    addWork(login, request.form['title'], work)
+                    elif extension == 'docx':
+                        work = docx2txt.process(file)
+                        
+                    else:
+                        flash('Файл должен иметь расширение .txt или .docx', 'danger')
+                        return redirect(url_for('profile', login = login))
 
+                    if len(work) > 1000:
+                        flash('В предложенной работе более 1000 символов', 'danger')
+                        return redirect(url_for('profile', login = login))
+                    else:
+                        addWork(login, request.form['title'], work)
+                        flash('Работа успешна загружена', 'success')
                 # except:
                 #     work = request.form['work']
                 #     addWork(login, request.form['title'], work)
