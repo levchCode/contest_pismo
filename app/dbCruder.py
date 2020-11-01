@@ -58,10 +58,10 @@ def addTheme(login, theme):
     except:
         return False
 
-def addWork(login, title, work):
+def addWork(login, name, title, work):
     try:
         url = str(uuid.uuid4())
-        work = Work(url=url, login=login, title=title, work=work, status="На рассмотрении", rating=0).save()
+        work = Work(url=url, login=login, name=name, title=title, work=work, status="На рассмотрении", rating=0).save()
         return True
     except:
         return False
@@ -70,6 +70,7 @@ def getWork(url):
     try:
         work = Work.objects.get(url=url)
         return {"login": work['login'],
+                "name": work['name'],
                 "theme": work['theme'],
                 "title": work['title'],
                 "work": work['work'],
@@ -80,3 +81,6 @@ def getWork(url):
 
 def getWorks(login):
     return Work.objects(login=login)
+
+def getWorks():
+    return Work.objects()

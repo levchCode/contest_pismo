@@ -54,7 +54,7 @@ def profile(login):
                         flash('В предложенной работе более 1000 символов', 'danger')
                         return redirect(url_for('profile', login = login))
                     else:
-                        addWork(login, request.form['title'], work)
+                        addWork(login, current_user.name, request.form['title'], work)
                         flash('Работа успешна загружена', 'success')
                 # except:
                 #     work = request.form['work']
