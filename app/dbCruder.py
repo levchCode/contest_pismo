@@ -2,7 +2,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from secret import DB_link, DB_name
 from app import *
 from objects.users import User
-from objects.works import Work
+from objects.works import Work, Rating
 from objects.themes import Theme
 import uuid
 
@@ -84,3 +84,10 @@ def getWorks(login):
 
 def getWorks():
     return Work.objects()
+
+def addRating(url, grammar, vocabulary, relevance):
+
+    rating = Rating(login=current_user.login, grammar=grammar, vocabulary=vocabulary, relevance=relevance)
+    work = Work.objects.get(url=url)
+    work.rating.append(rating)
+    work.save()
