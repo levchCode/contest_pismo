@@ -69,13 +69,7 @@ def addWork(login, name, title, work):
 def getWork(url):
     try:
         work = Work.objects.get(url=url)
-        return {"login": work['login'],
-                "name": work['name'],
-                "theme": work['theme'],
-                "title": work['title'],
-                "work": work['work'],
-                "status": work['status'],
-                "rating": work['rating']}
+        return work
     except:
         return False
 
@@ -86,8 +80,11 @@ def getWorks():
     return Work.objects()
 
 def addRating(url, grammar, vocabulary, relevance):
-
-    rating = Rating(login=current_user.login, grammar=grammar, vocabulary=vocabulary, relevance=relevance)
     work = Work.objects.get(url=url)
+    for i in work.rating:
+        if i['login'] == current_user.login:
+            return False
+    rating = Rating(login=current_user.login, grammar=grammar, vocabulary=vocabulary, relevance=relevance)
     work.rating.append(rating)
     work.save()
+    return True

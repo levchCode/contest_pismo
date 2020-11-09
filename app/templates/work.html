@@ -30,14 +30,14 @@
             </div>
             <hr>
             
-            {%if current_user.is_authenticated and current_user.login != user.login%}
+            {%if current_user.is_authenticated and current_user.login != user.login and not vote['rating']%}
                 <div class="row w-100 text-left align-items-start mb-5">
 
                     <form method="POST">
                         <input type="hidden" name="type" value="rating">
-
+                        <h3>Ваши оценки:</h3>
                         <fieldset>
-                            <legend>Грамматика</legend>
+                            <h5>Грамматика</h5>
                             <div>
                               <input type="radio" name="grammar" value="1" />
                               <input type="radio" name="grammar" value="2" />
@@ -48,7 +48,7 @@
                           </fieldset>
                     
                           <fieldset>
-                            <legend>Лексика</legend>
+                            <h5>Лексика</h5>
                             <div>
                               <input type="radio" name="vocabulary" value="1" />
                               <input type="radio" name="vocabulary" value="2" />
@@ -59,7 +59,7 @@
                           </fieldset>
                     
                           <fieldset>
-                            <legend>Соответствие теме</legend>
+                            <h5>Соответствие теме</h5>
                             <div>
                               <input type="radio" name="relevance" value="1" />
                               <input type="radio" name="relevance" value="2" />
@@ -72,7 +72,15 @@
                     </form>
         
                 </div>
-                
+            {% elif current_user.is_authenticated and current_user.login != user.login and vote['rating'] %}
+            <div class="row w-100 text-left align-items-start mb-5">
+
+              <h3>Ваши оценки:</h3>
+              <h5>Грамматика: {{ vote['rating_grammar'] }}</h5>
+              <h5>Лексика: {{ vote['rating_vocabulary'] }}</h5>
+              <h5>Соответствие теме: {{ vote['rating_relevance'] }}</h5>
+  
+            </div>
             {%endif%}
 
         </div>
