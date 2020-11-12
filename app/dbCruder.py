@@ -23,10 +23,7 @@ def loginUser(login, password):
 
         if check_password_hash(user.password, password):
             login_user(user, remember=True)
-            return {"name": user['name'], 
-                    "login": user['login'], 
-                    "email": user['email'], 
-                    "password": user['password']}
+            return user
     except:
         return False
 
@@ -61,7 +58,7 @@ def addTheme(login, theme):
 def addWork(login, name, title, work):
     try:
         url = str(uuid.uuid4())
-        work = Work(url=url, login=login, name=name, title=title, work=work, status="На рассмотрении", rating=0).save()
+        work = Work(url=url, login=login, name=name, title=title, work=work, status="На рассмотрении").save()
         return True
     except:
         return False
@@ -79,12 +76,12 @@ def getWorks(login):
 def getWorks():
     return Work.objects()
 
-def addRating(url, grammar, vocabulary, relevance):
+def addRating(url, grammar, vocabulary, relevance, comment):
     work = Work.objects.get(url=url)
     for i in work.rating:
         if i['login'] == current_user.login:
             return False
-    rating = Rating(login=current_user.login, grammar=grammar, vocabulary=vocabulary, relevance=relevance)
+    rating = Rating(login=current_user.login,name=current_user.name, grammar=grammar, vocabulary=vocabulary, relevance=relevance, comment=comment)
     work.rating.append(rating)
     work.save()
     return True

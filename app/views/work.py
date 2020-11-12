@@ -4,22 +4,16 @@ from dbCruder import getWork
 
 def checkUserVoted(rating):
     vote = {
-        'rating':False,
-        'comment':False
+        'voted':False
     }
     for i in rating:
         if i['login'] == current_user.login:
-            vote['rating'] = True
+            vote['voted'] = True
             vote['rating_grammar'] = i['grammar']
             vote['rating_vocabulary'] = i['vocabulary']
             vote['rating_relevance'] = i['relevance']
+            vote['comment'] = i['comment']
             break
-
-    # for i in comments:
-    #     if i['login'] == current_user.login:
-    #         vote['comment'] = True
-    #         break
-
     return vote
     
 
@@ -33,7 +27,8 @@ def work(url):
                     grammar = request.form['grammar']
                     vocabulary = request.form['vocabulary']
                     relevance = request.form['relevance']
-                    rating = addRating(url, grammar, vocabulary, relevance)
+                    comment = request.form['comment']
+                    rating = addRating(url, grammar, vocabulary, relevance, comment)
                     if rating:
                         flash('Работа оценена', 'success')
                     else:

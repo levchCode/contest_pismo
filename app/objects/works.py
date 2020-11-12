@@ -2,10 +2,12 @@ from app import *
 
 
 class Rating(db.EmbeddedDocument):
-    login = db.StringField(unique=True)
+    login = db.StringField()
+    name = db.StringField()
     grammar = db.IntField()
     vocabulary = db.IntField()
     relevance = db.IntField()
+    comment = db.StringField()
 
 class Work(db.Document):
     meta = {'collection': 'Works'}

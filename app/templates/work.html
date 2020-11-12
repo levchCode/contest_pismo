@@ -8,84 +8,101 @@
 
 
 {% block  main %}
-<div class="card mb-3">
+  <div class="card centered mb-3">
 
-    <h6 class="mt-2">{{ work['title'] }}</h6>
+      <h6 class="mt-2">{{ work['title'] }}</h6>
 
-    <div class="row g-0 text-left align-items-start">
-      <div class="col-8">
-        <div class="card-body">
-            <textarea class="form-control" rows="15" readonly>{{ work['work'] }}</textarea>
+      <div class="row g-0 text-left align-items-start">
+        <div class="col-8">
+          <div class="card-body">
+              <textarea class="form-control" rows="15" readonly>{{ work['work'] }}</textarea>
+          </div>
         </div>
-      </div>
-      <div class="col-4">
-        <div class="card-body">
-            <div class="row g-0 text-left align-items-start mb-3">
-                <div class="col-2">
-                    <img class="rounded-circle img-circle" style="width: 50px;" src="https://yt3.ggpht.com/a/AATXAJyjTcWPb5mfd8n7aShSGlvpO6MQBUdkJqI6iA=s900-c-k-c0xffffffff-no-rj-mo">
-                </div>
-                <div class="col-10">
-                    <h5 class="pl-3">{{ user.name }}</h5>
-                </div>
-            </div>
-            <hr>
-            
-            {%if current_user.is_authenticated and current_user.login != user.login and not vote['rating']%}
-                <div class="row w-100 text-left align-items-start mb-5">
+        <div class="col-4">
+          <div class="card-body">
+              <div class="row g-0 text-left align-items-start mb-3">
+                  <div class="col-2">
+                      <img class="rounded-circle img-circle" style="width: 50px;" src="https://yt3.ggpht.com/a/AATXAJyjTcWPb5mfd8n7aShSGlvpO6MQBUdkJqI6iA=s900-c-k-c0xffffffff-no-rj-mo">
+                  </div>
+                  <div class="col-10">
+                      <h5 class="pl-3">{{ user.name }}</h5>
+                  </div>
+              </div>
+              <hr>
+              
+              {%if current_user.is_authenticated and current_user.login != user.login and not vote['voted']%}
+                  <div class="row w-100 text-left align-items-start">
 
-                    <form method="POST">
-                        <input type="hidden" name="type" value="rating">
-                        <h3>Ваши оценки:</h3>
-                        <fieldset>
-                            <h5>Грамматика</h5>
-                            <div>
-                              <input type="radio" name="grammar" value="1" />
-                              <input type="radio" name="grammar" value="2" />
-                              <input type="radio" name="grammar" value="3" />
-                              <input type="radio" name="grammar" value="4" />
-                              <input type="radio" name="grammar" value="5" />
-                            </div>
-                          </fieldset>
-                    
+                      <form method="POST">
+                          <input type="hidden" name="type" value="rating">
+                          <h3>Ваши оценки:</h3>
                           <fieldset>
-                            <h5>Лексика</h5>
-                            <div>
-                              <input type="radio" name="vocabulary" value="1" />
-                              <input type="radio" name="vocabulary" value="2" />
-                              <input type="radio" name="vocabulary" value="3" />
-                              <input type="radio" name="vocabulary" value="4" />
-                              <input type="radio" name="vocabulary" value="5" />
-                            </div>
-                          </fieldset>
-                    
-                          <fieldset>
-                            <h5>Соответствие теме</h5>
-                            <div>
-                              <input type="radio" name="relevance" value="1" />
-                              <input type="radio" name="relevance" value="2" />
-                              <input type="radio" name="relevance" value="3" />
-                              <input type="radio" name="relevance" value="4" />
-                              <input type="radio" name="relevance" value="5" />
-                            </div>
-                          </fieldset>
-                          <button type="submit" class="btn btn-primary float-left mb-3">Оценить работу</button>
-                    </form>
+                              <h5>Грамматика</h5>
+                              <div>
+                                <input type="radio" name="grammar" value="1" />
+                                <input type="radio" name="grammar" value="2" />
+                                <input type="radio" name="grammar" value="3" />
+                                <input type="radio" name="grammar" value="4" />
+                                <input type="radio" name="grammar" value="5" />
+                              </div>
+                            </fieldset>
+                      
+                            <fieldset>
+                              <h5>Лексика</h5>
+                              <div>
+                                <input type="radio" name="vocabulary" value="1" />
+                                <input type="radio" name="vocabulary" value="2" />
+                                <input type="radio" name="vocabulary" value="3" />
+                                <input type="radio" name="vocabulary" value="4" />
+                                <input type="radio" name="vocabulary" value="5" />
+                              </div>
+                            </fieldset>
+                      
+                            <fieldset>
+                              <h5>Соответствие теме</h5>
+                              <div>
+                                <input type="radio" name="relevance" value="1" />
+                                <input type="radio" name="relevance" value="2" />
+                                <input type="radio" name="relevance" value="3" />
+                                <input type="radio" name="relevance" value="4" />
+                                <input type="radio" name="relevance" value="5" />
+                              </div>
+                            </fieldset>
+                            <textarea class="form-control" name="comment" placeholder="Ваш комментарий:"></textarea>
+                            <button type="submit" class="btn btn-primary float-left mb-3 mt-2">Оценить работу</button>
+                      </form>
+          
+                  </div>
+              {% elif current_user.is_authenticated and current_user.login != user.login and vote['voted'] %}
+              <div class="row w-100 text-left align-items-start">
+
+                <h3>Ваши оценки:</h3>
+                <h5>Грамматика: {{ vote['rating_grammar'] }}</h5>
+                <h5>Лексика: {{ vote['rating_vocabulary'] }}</h5>
+                <h5>Соответствие теме: {{ vote['rating_relevance'] }}</h5>
+                <h5>Ваш комментарий:</h5>
+                <textarea class="form-control" readonly>{{ vote['comment'] }}</textarea>
+              </div>
+              {%endif%}
+
+          </div>
+        </div>
         
-                </div>
-            {% elif current_user.is_authenticated and current_user.login != user.login and vote['rating'] %}
-            <div class="row w-100 text-left align-items-start mb-5">
-
-              <h3>Ваши оценки:</h3>
-              <h5>Грамматика: {{ vote['rating_grammar'] }}</h5>
-              <h5>Лексика: {{ vote['rating_vocabulary'] }}</h5>
-              <h5>Соответствие теме: {{ vote['rating_relevance'] }}</h5>
-  
-            </div>
-            {%endif%}
-
+      </div>
+  </div>
+  <h5 class="text-left" style="margin-left: 20%;">Все комментарии:</h5>
+  {% if work.rating %}
+    {% for i in work.rating%}
+      {% if i.login != current_user.login %}
+      <div class="card comments mb-2">
+        <div class="card-header text-left">
+          <a class = "text-primary" href = "../../profile/{{ i.login }}" style="text-decoration: none;">{{ i.name }}</a>
+        </div>
+        <div class="card-body">
+          <p class="card-text text-left">{{ i.comment }}</p>
         </div>
       </div>
-      
-    </div>
-</div>
+      {% endif %}
+    {% endfor %}
+  {% endif %}    
 {% endblock %}
