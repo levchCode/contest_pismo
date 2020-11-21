@@ -1,6 +1,14 @@
 from app import *
 
 
+class Rating(db.EmbeddedDocument):
+    login = db.StringField()
+    name = db.StringField()
+    grammar = db.IntField()
+    vocabulary = db.IntField()
+    relevance = db.IntField()
+    comment = db.StringField()
+
 class Work(db.Document):
     meta = {'collection': 'Works'}
     url = db.StringField(required=True)
@@ -10,4 +18,4 @@ class Work(db.Document):
     title = db.StringField(required=True)
     work = db.StringField(required=True)
     status = db.StringField(required=True)
-    rating = db.IntField(required=True)
+    rating = db.EmbeddedDocumentListField(Rating, default= [])
