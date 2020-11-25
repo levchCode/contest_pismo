@@ -57,9 +57,14 @@ def addTheme(login, theme):
 
 def addWork(login, name, title, work):
     try:
-        url = str(uuid.uuid4())
-        work = Work(url=url, login=login, name=name, title=title, work=work, status="На рассмотрении").save()
-        return True
+        current_theme = Theme.objects.order_by('-id').first()['theme']
+        for i in getWorksByLogin(login):
+            if i['theme'] == current_theme:
+                return False
+        else:
+            url = str(uuid.uuid4())
+            work = Work(url=url, login=login, name=name, theme=current_theme, title=title, work=work).save()
+            return True
     except:
         return False
 
@@ -70,17 +75,24 @@ def getWork(url):
     except:
         return False
 
-def getWorks(login):
+def getWorksByLogin(login):
     return Work.objects(login=login)
 
-def getWorks():
-    return Work.objects()
+def getAllWorks():
+    return Work.objects().order_by('-voices')
 
 def addRating(url, grammar, vocabulary, relevance, comment):
     work = Work.objects.get(url=url)
     for i in work.rating:
         if i['login'] == current_user.login:
             return False
+    
+    last_work = Work.objects.order_by('-id').get(login=current_user.login)
+    current_theme = Theme.objects.order_by('-id').first()['theme']
+    if last_work['theme'] == current_theme:
+        last_work['voices'] += 1
+        last_work.save()
+
     rating = Rating(login=current_user.login,name=current_user.name, grammar=grammar, vocabulary=vocabulary, relevance=relevance, comment=comment)
     work.rating.append(rating)
     work.save()
