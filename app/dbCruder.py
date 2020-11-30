@@ -3,7 +3,7 @@ from secret import DB_link, DB_name
 from app import *
 from objects.users import User
 from objects.works import Work, Rating
-from objects.themes import Theme
+from objects.themes import CurrentTheme, Theme
 import uuid
 
 
@@ -56,23 +56,37 @@ def addTheme(login, theme):
         return False
 
 def addWork(login, name, title, work):
-    try:
-        current_theme = Theme.objects.order_by('-id').first()['theme']
-        for i in getWorksByLogin(login):
-            if i['theme'] == current_theme:
-                return False
-        else:
-            url = str(uuid.uuid4())
-            work = Work(url=url, login=login, name=name, theme=current_theme, title=title, work=work).save()
-            return True
-    except:
-        return False
+    # try:
+    current_theme = CurrentTheme.objects.order_by('-id').first()['theme']
+    for i in getWorksByLogin(login):
+        if i['theme'] == current_theme:
+            return False
+    else:
+        url = str(uuid.uuid4())
+        work = Work(url=url, login=login, name=name, theme=current_theme, title=title, work=work).save()
+        return True
+    # except:
+    #     return False
 
 def getWork(url):
     try:
         work = Work.objects.get(url=url)
         return work
     except:
+        return False
+
+def getCanVote():
+
+    current_theme = CurrentTheme.objects.order_by('-id').first()['theme']
+    try:
+        last_work = Work.objects.order_by('-id').get(login=current_user.login)
+    except:
+        last_work = None
+
+    print(last_work)
+    if last_work and last_work['theme'] == current_theme:
+        return True
+    else:
         return False
 
 def getWorksByLogin(login):
@@ -88,7 +102,7 @@ def addRating(url, grammar, vocabulary, relevance, comment):
             return False
     
     last_work = Work.objects.order_by('-id').get(login=current_user.login)
-    current_theme = Theme.objects.order_by('-id').first()['theme']
+    current_theme = CurrentTheme.objects.order_by('-id').first()['theme']
     if last_work['theme'] == current_theme:
         last_work['voices'] += 1
         last_work.save()

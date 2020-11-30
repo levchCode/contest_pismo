@@ -88,14 +88,8 @@
                     <input name="title" class="form-control mt-2 mb-2" placeholder="Название темы"  autofocus="" required="">
 
                     <div class="row align-items-center">
-                        <!-- <div class="col"> будет раскомменчено после 02.11.20
-                          <textarea name="work" class="form-control" id="textarea" onchange="checkForm()" required=""></textarea>
-                        </div>
-                        <div class="col-1">
-                            <span class="align-middle">или</span>                            
-                        </div> -->
                         <div class="col rightblock">
-                          <input name="work" class="form-control" type="file" id="file" onchange="checkForm()" required="" accept=".txt, .docx"/>
+                          <input name="work" class="form-control" type="file" id="file" required="" accept=".txt, .docx"/>
                         </div>
                     </div>
 
@@ -133,8 +127,10 @@
                   </div>
                 </a>
                 {% endfor %}
-              {% else %}
+              {% elif current_user.login == user.login %}
                 <h5>У вас пока нет загруженных работ</h5>
+              {% else %}
+                <h5>Участник еще не загружал работы</h5>
               {% endif %}
           </div>
 
