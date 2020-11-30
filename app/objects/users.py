@@ -7,3 +7,4 @@ class User(UserMixin, db.Document):
     login = db.StringField(unique=True, required=True)
     email = db.StringField(unique=True, required=True)
     password = db.StringField(required=True)
+    role = db.StringField(required=True, default='User')

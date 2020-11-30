@@ -1,6 +1,6 @@
 from app import *
 
-from dbCruder import getWork
+from dbCruder import *
 
 def checkUserVoted(rating):
     vote = {
@@ -39,4 +39,4 @@ def work(url):
     work = getWork(url)
     vote = checkUserVoted(work.rating)
     user = getUser(work['login'])
-    return render_template('work.html', work=work, user=user, vote=vote)
+    return render_template('work.html', work=work, user=user, vote=vote, canVote = getCanVote())

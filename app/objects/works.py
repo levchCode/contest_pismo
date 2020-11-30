@@ -14,8 +14,9 @@ class Work(db.Document):
     url = db.StringField(required=True)
     login = db.StringField(required=True)
     name = db.StringField(required=True)
-    theme = db.StringField() #TODO Сделать привязку к сезонной теме. Создать коллекцию под тему, которую сгенерирует нейросеть.
+    theme = db.StringField(required=True)
     title = db.StringField(required=True)
     work = db.StringField(required=True)
-    status = db.StringField(required=True)
-    rating = db.EmbeddedDocumentListField(Rating, default= [])
+    status = db.StringField(required=True, default='На рассмотрении')
+    rating = db.EmbeddedDocumentListField(Rating, default=[])
+    voices = db.IntField(default=0)

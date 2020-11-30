@@ -31,7 +31,6 @@ def profile(login):
 
 
             elif request.form['type'] == 'work':
-                # try:
                 file = request.files['work']
                 if file.filename == '':
                     flash('Не выбран файл', 'danger')
@@ -54,12 +53,10 @@ def profile(login):
                         flash('В предложенной работе более 1000 символов', 'danger')
                         return redirect(url_for('profile', login = login))
                     else:
-                        addWork(login, current_user.name, request.form['title'], work)
-                        flash('Работа успешна загружена', 'success')
-                # except:
-                #     work = request.form['work']
-                #     addWork(login, request.form['title'], work)
-                
+                        if addWork(login, current_user.name, request.form['title'], work):
+                            flash('Работа успешна загружена', 'success')
+                        else:
+                            flash(f'Нельзя загрузить более двух работ', 'danger')                
                 return redirect(url_for('profile', login = login))
 
         else:
