@@ -5,6 +5,7 @@ from objects.users import User
 from objects.works import Work, Rating
 from objects.themes import CurrentTheme, Theme
 import uuid
+from datetime import datetime
 
 
 def addUser(name, login, email, password):
@@ -43,10 +44,36 @@ def getUser(login):
                 "login": user['login'], 
                 "email": user['email'], 
                 "password": user['password'],
-                "works": [[work['url'], work['theme'], work['title'], work['status']] for work in works]}
+                "works": [[work['url'], work['theme'], work['title'], work['status'], work['year']] for work in works]}
     except:
         return False
 
+def addCurrentTheme(theme, start, end):
+    last_theme = CurrentTheme.objects.order_by('-id').first()
+    current_time = datetime.now()
+    print(current_time > last_theme['end'])
+    if current_time > last_theme['end']:
+        Theme.drop_collection()
+    theme = CurrentTheme(theme=theme, start=start, end=end).save()
+    return True
+
+def getCurrentStage():
+    all_themes = CurrentTheme.objects.order_by('-id')
+    current_theme = None
+    stage = ""
+    current_time = datetime.now()
+
+    for i in all_themes:
+        if i['start'] <= current_time and i['end'] >= current_time :
+            second_stage_time = datetime.fromtimestamp( datetime.timestamp(i['start']) + (datetime.timestamp(i['end']) - datetime.timestamp(i['start']) ) // 3)
+            third_stage_time = datetime.fromtimestamp( datetime.timestamp(i['start']) + (datetime.timestamp(i['end']) - datetime.timestamp(i['start']) ) // 1.5)
+            if current_time < second_stage_time:
+                stage = "Suggestion"
+            elif current_time < third_stage_time:
+                stage = "Loading"
+            else:
+                stage = "Assessment"
+    return stage
 
 def addTheme(login, theme):
     try:
@@ -56,7 +83,6 @@ def addTheme(login, theme):
         return False
 
 def addWork(login, name, title, work):
-    # try:
     current_theme = CurrentTheme.objects.order_by('-id').first()['theme']
     for i in getWorksByLogin(login):
         if i['theme'] == current_theme:
@@ -65,8 +91,6 @@ def addWork(login, name, title, work):
         url = str(uuid.uuid4())
         work = Work(url=url, login=login, name=name, theme=current_theme, title=title, work=work).save()
         return True
-    # except:
-    #     return False
 
 def getWork(url):
     try:
@@ -83,7 +107,6 @@ def getCanVote():
     except:
         last_work = None
 
-    print(last_work)
     if last_work and last_work['theme'] == current_theme:
         return True
     else:
@@ -92,8 +115,16 @@ def getCanVote():
 def getWorksByLogin(login):
     return Work.objects(login=login)
 
-def getAllWorks():
-    return Work.objects().order_by('-voices')
+def getAllWorksByLastTheme():
+    last_theme = CurrentTheme.objects.order_by('-id').first()
+    current_time = datetime.now()
+    if current_time <= last_theme['end']:
+        return Work.objects(theme=last_theme['theme']).order_by('-voices')
+    else:
+        return None
+
+def getAllThemes():
+    return CurrentTheme.objects.order_by('id')
 
 def addRating(url, grammar, vocabulary, relevance, comment):
     work = Work.objects.get(url=url)
@@ -111,3 +142,4 @@ def addRating(url, grammar, vocabulary, relevance, comment):
     work.rating.append(rating)
     work.save()
     return True
+  

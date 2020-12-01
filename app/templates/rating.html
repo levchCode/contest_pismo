@@ -8,6 +8,8 @@
 
 
 {% block  main %}
+
+    <h5 class="mt-5">Тема: {{ works[0]['theme'] }}</h5>
     <div class="card">
         <table class="table mb-0">
             <thead>
@@ -20,9 +22,14 @@
             <tbody>
                 {% for i in works %}
                     <tr>
-                        <td>{{ i['name'] }}</td>
+                        <td><a href="../profile/{{ i['login'] }}" class="text-decoration-none">{{ i['name'] }}</a></td>
                         <td>{{ i['voices'] }}</td>
-                        <td><a href="../work/{{ i['url'] }}" class="btn btn-primary mr-2">Оценить</a></td>
+                        
+                        {% if current_user.login != i['login'] %}
+                            <td><a href="../work/{{ i['url'] }}" class="btn btn-primary mr-2">Оценить</a></td>
+                        {% else %}
+                            <td><a href="../work/{{ i['url'] }}" class="btn btn-primary mr-2">Посмотреть работу</a></td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
             </tbody>
