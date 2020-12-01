@@ -3,5 +3,46 @@
 
 {% block title %}
     <title>Панель админа | Письмо2020</title>
-    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/work.css') }}"/>
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}"/>
+{% endblock %}
+
+{% block main %}
+    <div class="card mt-5">
+        
+            <table class="table mb-0 ml-0 mr-0">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Тема</th>
+                    <th scope="col">Время начала</th>
+                    <th scope="col">Время конца</th>
+                    <th scope="col">Год</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+        {% for item in themes %}
+                <tbody>
+                    <tr>
+                        <td>{{ loop.index }}</a></td>
+                        <td>{{ item['theme'] }}</td>
+                        <td>{{ item['start'] }}</td>
+                        <td>{{ item['end'] }}</td>
+                        <td>{{ item['year'] }}</td>
+                    </tr>
+                </tbody>
+        {% endfor %}
+            </table>
+        
+
+        <form class="form" method="POST">
+            <input type="hidden" name="type" value="theme">
+
+            <input name = "theme" class="form-control mt-2 mb-2" placeholder="Название темы"  autofocus="" required="">
+
+            <input name = "start" type="datetime-local">
+            <input name = "end" type="datetime-local">
+
+            <button class="btn btn-lg btn-primary btn-block mt-2" type="submit">Создать</button>
+        </form>
+    </div>
 {% endblock %}

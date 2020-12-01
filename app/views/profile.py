@@ -3,7 +3,7 @@ from app import *
 import docx2txt
 import os
 
-from dbCruder import getUser
+from dbCruder import *
 
 
 def allowed_file(filename):
@@ -63,8 +63,9 @@ def profile(login):
             return redirect(url_for('login'))
 
     user = getUser(login)
+    stage = getCurrentStage()
     if getUser(login):
-        return render_template('profile.html', user = user)
+        return render_template('profile.html', user = user, stage = stage)
     else:
         return make_response(render_template('p404.html'), 404)
     

@@ -1,5 +1,5 @@
 from app import *
-
+from datetime import datetime
 
 class Theme(db.Document):
     meta = {'collection': 'Themes'}
@@ -9,3 +9,6 @@ class Theme(db.Document):
 class CurrentTheme(db.Document):
     meta = {'collection': 'CurrentTheme'}
     theme = db.StringField(required=True)
+    year = db.StringField(default = str(datetime.today().year))
+    start = db.DateTimeField()
+    end = db.DateTimeField()

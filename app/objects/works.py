@@ -1,5 +1,5 @@
 from app import *
-
+from datetime import datetime
 
 class Rating(db.EmbeddedDocument):
     login = db.StringField()
@@ -20,3 +20,4 @@ class Work(db.Document):
     status = db.StringField(required=True, default='На рассмотрении')
     rating = db.EmbeddedDocumentListField(Rating, default=[])
     voices = db.IntField(default=0)
+    year = db.StringField(default = str(datetime.today().year))
