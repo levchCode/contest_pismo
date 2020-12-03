@@ -30,7 +30,7 @@
               </div>
               <hr>
               
-              {%if current_user.is_authenticated and current_user.login != user.login and not vote['voted'] and canVote %}
+              {%if current_user.is_authenticated and current_user.login != user.login and not vote['voted'] and canVote == 'Now' %}
                   <div class="row w-100 text-left align-items-start">
 
                       <form method="POST">
@@ -83,10 +83,14 @@
                 <h5>Ваш комментарий:</h5>
                 <textarea class="form-control" readonly>{{ vote['comment'] }}</textarea>
               </div>
-              {% elif current_user.is_authenticated and current_user.login != user.login and not canVote %}
-              <div class="row w-100 text-left align-items-start">
-                <h5>Чтобы оценить и оставить комментарий необходимо загрузить работу</h5>
-              </div>
+              {% elif current_user.is_authenticated and current_user.login != user.login and canVote == 'Later'%}
+                <div class="row w-100 text-left align-items-start">
+                  <h5>Оценка работ начнется позже</h5>
+                </div>
+              {% elif current_user.is_authenticated and current_user.login != user.login and canVote == 'Never'%}
+                <div class="row w-100 text-left align-items-start">
+                  <h5>Чтобы оценить и оставить комментарий необходимо загрузить работу</h5>
+                </div>
               {%endif%}
 
           </div>

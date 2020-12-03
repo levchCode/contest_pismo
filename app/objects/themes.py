@@ -8,7 +8,9 @@ class Theme(db.Document):
 
 class CurrentTheme(db.Document):
     meta = {'collection': 'CurrentTheme'}
-    theme = db.StringField(required=True)
-    year = db.StringField(default = str(datetime.today().year))
-    start = db.DateTimeField()
-    end = db.DateTimeField()
+    theme = db.StringField(required=True, default='')
+    year = db.StringField(required=True, default = str(datetime.today().year))
+    stage_1 = db.DateTimeField(required=True)
+    stage_2 = db.DateTimeField(required=True)
+    stage_3 = db.DateTimeField(required=True)
+    stage_4 = db.DateTimeField(required=True)

@@ -6,6 +6,7 @@ from objects.works import Work, Rating
 from objects.themes import CurrentTheme, Theme
 import uuid
 from datetime import datetime
+from random import choice
 
 
 def addUser(name, login, email, password):
@@ -48,28 +49,27 @@ def getUser(login):
     except:
         return False
 
-def addCurrentTheme(theme, start, end):
+def addCurrentTheme(stage_1, stage_2, stage_3, stage_4):
     last_theme = CurrentTheme.objects.order_by('-id').first()
     current_time = datetime.now()
-    print(current_time > last_theme['end'])
-    if current_time > last_theme['end']:
+    if last_theme != None and current_time > last_theme['stage_4']:
         Theme.drop_collection()
-    theme = CurrentTheme(theme=theme, start=start, end=end).save()
+    theme = CurrentTheme(stage_1=stage_1, stage_2=stage_2, stage_3=stage_3, stage_4=stage_4).save()
     return True
 
 def getCurrentStage():
     all_themes = CurrentTheme.objects.order_by('-id')
-    current_theme = None
     stage = ""
     current_time = datetime.now()
 
     for i in all_themes:
-        if i['start'] <= current_time and i['end'] >= current_time :
-            second_stage_time = datetime.fromtimestamp( datetime.timestamp(i['start']) + (datetime.timestamp(i['end']) - datetime.timestamp(i['start']) ) // 3)
-            third_stage_time = datetime.fromtimestamp( datetime.timestamp(i['start']) + (datetime.timestamp(i['end']) - datetime.timestamp(i['start']) ) // 1.5)
-            if current_time < second_stage_time:
+        if i['stage_1'] <= current_time and i['stage_4'] >= current_time :
+            if current_time < i['stage_2']:
                 stage = "Suggestion"
-            elif current_time < third_stage_time:
+            elif current_time < i['stage_3']:
+                if i['theme'] == '':
+                    theme = choice(getAllThemes())['theme']
+                    i.update(theme=theme)
                 stage = "Loading"
             else:
                 stage = "Assessment"
@@ -101,16 +101,20 @@ def getWork(url):
 
 def getCanVote():
 
-    current_theme = CurrentTheme.objects.order_by('-id').first()['theme']
+    current_theme = CurrentTheme.objects.order_by('-id').first()
     try:
         last_work = Work.objects.order_by('-id').get(login=current_user.login)
     except:
         last_work = None
 
-    if last_work and last_work['theme'] == current_theme:
-        return True
+    current_time = datetime.now()
+    if last_work and last_work['theme'] == current_theme['theme']:
+        if current_time >= current_theme['stage_3']:
+            return "Now"
+        else:
+            return "Later"
     else:
-        return False
+        return "Never"
 
 def getWorksByLogin(login):
     return Work.objects(login=login)
@@ -118,12 +122,15 @@ def getWorksByLogin(login):
 def getAllWorksByLastTheme():
     last_theme = CurrentTheme.objects.order_by('-id').first()
     current_time = datetime.now()
-    if current_time <= last_theme['end']:
+    if last_theme != None and current_time >= last_theme['stage_3'] and current_time <= last_theme['stage_4']:
         return Work.objects(theme=last_theme['theme']).order_by('-voices')
     else:
         return None
 
 def getAllThemes():
+    return Theme.objects.order_by('id')
+
+def getAllCurrentThemes():
     return CurrentTheme.objects.order_by('id')
 
 def addRating(url, grammar, vocabulary, relevance, comment):
