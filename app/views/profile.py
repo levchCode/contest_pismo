@@ -65,7 +65,7 @@ def profile(login):
     user = getUser(login)
     stage = getCurrentStage()
     if getUser(login):
-        return render_template('profile.html', user = user, stage = stage)
+        return render_template('profile.html', user = user, stage = stage, theme = getCurrentTheme())
     else:
         return make_response(render_template('p404.html'), 404)
     

@@ -15,7 +15,11 @@
       <div class="row g-0 text-left align-items-start">
         <div class="col-8">
           <div class="card-body">
+            {% if not work.user_authenticated or work.user_can_vote == 'Later' or work.user_can_vote == 'AfterLoad' %}
+              <textarea class="form-control text-center" rows="15" readonly>Скрытое содержимое</textarea>
+            {% else %}
               <textarea class="form-control" rows="15" readonly>{{ work['work'] }}</textarea>
+            {% endif %}
           </div>
         </div>
         <div class="col-4">
@@ -25,12 +29,17 @@
                       <img class="rounded-circle img-circle" style="width: 50px;" src="https://yt3.ggpht.com/a/AATXAJyjTcWPb5mfd8n7aShSGlvpO6MQBUdkJqI6iA=s900-c-k-c0xffffffff-no-rj-mo">
                   </div>
                   <div class="col-10">
-                      <h5 class="pl-3"><a href="../profile/{{ user.login }}" class="text-decoration-none">{{ user.name }}</a></h5>
+                      <h5 class="pl-3"><a href="../profile/{{ work.author_login }}" class="text-decoration-none">{{ work.author_name }}</a></h5>
                   </div>
               </div>
               <hr>
               
-              {%if current_user.is_authenticated and current_user.login != user.login and not vote['voted'] and canVote == 'Now' %}
+              {% if not work.user_authenticated %}
+                <div class="row w-100 text-left align-items-start">
+                  <h5>Чтобы оценить и оставить комментарий необходимо авторизироваться</h5>
+                </div>
+
+              {% elif work.user_can_vote == 'Now' %}
                   <div class="row w-100 text-left align-items-start">
 
                       <form method="POST">
@@ -73,25 +82,28 @@
                       </form>
           
                   </div>
-              {% elif current_user.is_authenticated and current_user.login != user.login and vote['voted'] %}
+                  
+              {% elif work.user_can_vote == 'JustVoted' %}
               <div class="row w-100 text-left align-items-start">
 
                 <h3>Ваши оценки:</h3>
-                <h5>Грамматика: {{ vote['rating_grammar'] }}</h5>
-                <h5>Лексика: {{ vote['rating_vocabulary'] }}</h5>
-                <h5>Соответствие теме: {{ vote['rating_relevance'] }}</h5>
+                <h5>Грамматика: {{ work['user_rating_grammar'] }}</h5>
+                <h5>Лексика: {{ work['user_rating_vocabulary'] }}</h5>
+                <h5>Соответствие теме: {{ work['user_rating_relevance'] }}</h5>
                 <h5>Ваш комментарий:</h5>
-                <textarea class="form-control" readonly>{{ vote['comment'] }}</textarea>
+                <textarea class="form-control" readonly>{{ work['user_comment'] }}</textarea>
               </div>
-              {% elif current_user.is_authenticated and current_user.login != user.login and canVote == 'Later'%}
+
+              {% elif work.user_can_vote == 'Later' %}
                 <div class="row w-100 text-left align-items-start">
                   <h5>Оценка работ начнется позже</h5>
                 </div>
-              {% elif current_user.is_authenticated and current_user.login != user.login and canVote == 'Never'%}
+
+              {% elif work.user_can_vote == 'AfterLoad' %}
                 <div class="row w-100 text-left align-items-start">
                   <h5>Чтобы оценить и оставить комментарий необходимо загрузить работу</h5>
                 </div>
-              {%endif%}
+              {% endif %}
 
           </div>
         </div>

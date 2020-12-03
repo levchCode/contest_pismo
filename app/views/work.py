@@ -1,20 +1,6 @@
 from app import *
 
 from dbCruder import *
-
-def checkUserVoted(rating):
-    vote = {
-        'voted':False
-    }
-    for i in rating:
-        if i['login'] == current_user.login:
-            vote['voted'] = True
-            vote['rating_grammar'] = i['grammar']
-            vote['rating_vocabulary'] = i['vocabulary']
-            vote['rating_relevance'] = i['relevance']
-            vote['comment'] = i['comment']
-            break
-    return vote
     
 
 @app.route('/work/<url>', methods=['GET', 'POST'])
@@ -35,8 +21,6 @@ def work(url):
                         flash('Вы уже оценили работу', 'danger')
                 except:
                     flash('Поставьте оценку за все критерии', 'danger')
-                
+
     work = getWork(url)
-    vote = checkUserVoted(work.rating)
-    user = getUser(work['login'])
-    return render_template('work.html', work=work, user=user, vote=vote, canVote = getCanVote())
+    return(render_template('work.html', work=work))

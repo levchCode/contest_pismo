@@ -57,22 +57,30 @@ def addCurrentTheme(stage_1, stage_2, stage_3, stage_4):
     theme = CurrentTheme(stage_1=stage_1, stage_2=stage_2, stage_3=stage_3, stage_4=stage_4).save()
     return True
 
-def getCurrentStage():
-    all_themes = CurrentTheme.objects.order_by('-id')
+def getCurrentTheme():
+    last_theme = CurrentTheme.objects.order_by('-id').first()
+    current_time = datetime.now()
+    if last_theme != None and current_time < last_theme['stage_3'] and current_time >= last_theme['stage_2']:
+        return last_theme
+    else:
+        return ''
+
+def getCurrentStage(url=''):
+    theme = CurrentTheme.objects.order_by('-id').first()
+    print(theme)
     stage = ""
     current_time = datetime.now()
 
-    for i in all_themes:
-        if i['stage_1'] <= current_time and i['stage_4'] >= current_time :
-            if current_time < i['stage_2']:
-                stage = "Suggestion"
-            elif current_time < i['stage_3']:
-                if i['theme'] == '':
-                    theme = choice(getAllThemes())['theme']
-                    i.update(theme=theme)
-                stage = "Loading"
-            else:
-                stage = "Assessment"
+    if theme['stage_1'] <= current_time and theme['stage_4'] >= current_time :
+        if current_time < theme['stage_2']:
+            stage = "Suggestion"
+        elif current_time < theme['stage_3']:
+            if theme['theme'] == '':
+                theme = choice(getAllThemes())['theme']
+                theme.update(theme=theme)
+            stage = "Loading"
+        else:
+            stage = "Assessment"
     return stage
 
 def addTheme(login, theme):
@@ -93,28 +101,55 @@ def addWork(login, name, title, work):
         return True
 
 def getWork(url):
-    try:
-        work = Work.objects.get(url=url)
-        return work
-    except:
-        return False
+    result = {}
 
-def getCanVote():
-
-    current_theme = CurrentTheme.objects.order_by('-id').first()
-    try:
-        last_work = Work.objects.order_by('-id').get(login=current_user.login)
-    except:
-        last_work = None
-
-    current_time = datetime.now()
-    if last_work and last_work['theme'] == current_theme['theme']:
-        if current_time >= current_theme['stage_3']:
-            return "Now"
-        else:
-            return "Later"
+    if current_user.is_authenticated:
+        result['user_authenticated'] = True
     else:
-        return "Never"
+        result['user_authenticated'] = False
+    
+    work = Work.objects.get(url=url)
+
+    result['author_login'] = work['login']
+    result['author_name'] = work['name']
+
+    for i in work['rating']:
+        if current_user.is_authenticated and i['login'] == current_user.login:
+            result['user_can_vote'] = 'JustVoted'
+            result['user_rating_grammar'] = i['grammar']
+            result['user_rating_vocabulary'] = i['vocabulary']
+            result['user_rating_relevance'] = i['relevance']
+            result['user_comment'] = i['comment']
+            break
+    
+    current_theme = CurrentTheme.objects.order_by('-id').first()
+    if work['theme'] == current_theme['theme']:
+
+        current_time = datetime.now()
+        if result['user_authenticated']:
+            last_work = Work.objects(login=current_user.login).order_by('-id').first()
+        else:
+            last_work = None
+
+        if current_time >= current_theme['stage_4']:
+            result['user_can_vote'] = "Ended"
+
+        elif result['user_authenticated'] and current_user.login == work['login']:
+            result['user_can_vote'] = "Never"
+
+        elif last_work and last_work['theme'] == current_theme['theme']:        
+            if current_time >= current_theme['stage_3']:
+                result['user_can_vote'] = "Now"
+            else:
+                result['user_can_vote'] = "Later"
+        else:
+            result['user_can_vote'] = "AfterLoad"
+    else:
+        result['user_can_vote'] = "Ended"
+
+    result['work'] = work['work']
+
+    return(result)
 
 def getWorksByLogin(login):
     return Work.objects(login=login)
