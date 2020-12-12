@@ -13,10 +13,11 @@ def admin():
 
     elif current_user.role =='Admin':
         if request.method == "POST" and current_user.is_authenticated:
-            theme = request.form['theme']
-            start = datetime.strptime(request.form['start'], '%Y-%m-%dT%H:%M')
-            end = datetime.strptime(request.form['end'], '%Y-%m-%dT%H:%M')
+            stage_1 = datetime.strptime(request.form['stage_1'], '%Y-%m-%dT%H:%M')
+            stage_2 = datetime.strptime(request.form['stage_2'], '%Y-%m-%dT%H:%M')
+            stage_3 = datetime.strptime(request.form['stage_3'], '%Y-%m-%dT%H:%M')
+            stage_4 = datetime.strptime(request.form['stage_4'], '%Y-%m-%dT%H:%M')
 
-            addCurrentTheme(theme, start, end)
-        return render_template('admin.html', themes=getAllThemes()) 
+            addCurrentTheme(stage_1, stage_2, stage_3, stage_4)
+        return render_template('admin.html', themes=getAllCurrentThemes()) 
     
