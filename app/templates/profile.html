@@ -2,7 +2,7 @@
 
 
 {% block title %}
-    <title>{{ user.login }} | Письмо2020</title>
+    <title>{{ user.user_login }} | Письмо2020</title>
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}"/>
     <script type="text/javascript" src="{{ url_for('static', filename='js/profile.js') }}"></script>
 {% endblock %}
@@ -21,7 +21,7 @@
                         <div>
                             <img class="rounded-circle img-circle w-25 mb-3" src="https://yt3.ggpht.com/a/AATXAJyjTcWPb5mfd8n7aShSGlvpO6MQBUdkJqI6iA=s900-c-k-c0xffffffff-no-rj-mo">
                             <h6>ФИО</h6>
-                            <p>{{ user.name }}</p>
+                            <p>{{ user.user_name }}</p>
                         </div>
                     </li>
                     <li class="list-group-item">
@@ -33,7 +33,7 @@
                 </ul>
             </div>
           </div>
-          {% if current_user.is_authenticated and current_user.login == user.login %}
+          {% if user.user_authenticated and current_user.login == user.user_login %}
             <div class="w-50">
               <div class="card-body">
                 <button type="button" class="btn btn-primary btn-block mb-2" data-toggle="modal" data-target="#shapeShowWorks">Мои работы</button>
@@ -117,25 +117,29 @@
         <div class="modal-content">
 
           <div class="modal-body">
-            {% if current_user.is_authenticated and current_user.login == user.login %}
+            {% if user.user_authenticated and current_user.login == user.user_login %}
               <h6>Мои работы</h6>
             {% else %}
               <h6>Работы участника</h6>
             {% endif %}
               
-              {% if user['works'] %}
-                {% for i in user['works'] %}
-                <a href="../work/{{ i[0] }}">
+              {% if user.user_works %}
+                {% for i in user['user_works'] %}
+                <a href="../work/{{ i[1] }}">
                   <div class="card float-left" style="margin: 5px">
                     <div class="card-body">
-                      <button type="button" class="btn btn-outline-primary mb-4">{{ i[3] }}</button>
-                      <h5 class="card-title">{{ i[2] }}</h5>
-                      <p class="card-text"> {{ i[4] }} </p>
+                      {% if i[7] == 'Завершено' %}
+                        <button type="button" class="btn btn-outline-success mb-4">{{ i[7] }}</button>
+                      {% else %}
+                      <button type="button" class="btn btn-outline-primary mb-4">{{ i[7] }}</button>
+                      {% endif %}
+                      <h5 class="card-title">{{ i[5] }}</h5>
+                      <p class="card-text"> {{ i[10] }} год </p>
                     </div>
                   </div>
                 </a>
                 {% endfor %}
-              {% elif current_user.login == user.login %}
+              {% elif current_user.login == user.user_login %}
                 <h5>У вас пока нет загруженных работ</h5>
               {% else %}
                 <h5>Участник еще не загружал работы</h5>

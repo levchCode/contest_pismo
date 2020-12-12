@@ -38,7 +38,9 @@ def updateUser(name, login, email, password):
         return False
 
 def getUser(login):
-    result = {}
+    result = {
+        'user_works': []
+    }
 
     if current_user.is_authenticated:
         result['user_authenticated'] = True
@@ -71,27 +73,13 @@ def getUser(login):
     
     works = Work.objects(login=login)
     for i in works:
-        for j in Work.objects(theme=theme).order_by('-id'):
-            if  
-        print(*(j for j in i))
-
-#                 "email": user['email'], 
-#                 "password": user['password'],
-#                 "works": [[work['url'], work['theme'], work['title'], work['status'], work['year']] for work in works]}
+        result['user_works'].append(list(i[j] for j in i))
     
+    for i in result['user_works']:
+        if i[4] != current_theme['theme'] or result['work_stage'] == 'Ended':
+            i[7] = 'Завершено'
 
-
-# def getUser(login):
-#     try:
-#         user = User.objects.get(login=login)
-#         works = Work.objects(login=login)
-#         return {"name": user['name'], 
-#                 "login": user['login'], 
-#                 "email": user['email'], 
-#                 "password": user['password'],
-#                 "works": [[work['url'], work['theme'], work['title'], work['status'], work['year']] for work in works]}
-#     except:
-#         return False
+    return result
 
 def addCurrentTheme(stage_1, stage_2, stage_3, stage_4):
     last_theme = CurrentTheme.objects.order_by('-id').first()
@@ -101,30 +89,30 @@ def addCurrentTheme(stage_1, stage_2, stage_3, stage_4):
     theme = CurrentTheme(stage_1=stage_1, stage_2=stage_2, stage_3=stage_3, stage_4=stage_4).save()
     return True
 
-# def getCurrentTheme():
-#     last_theme = CurrentTheme.objects.order_by('-id').first()
-#     current_time = datetime.now()
-#     if last_theme != None and current_time < last_theme['stage_3'] and current_time >= last_theme['stage_2']:
-#         return last_theme
-#     else:
-#         return ''
+def getCurrentTheme():
+    last_theme = CurrentTheme.objects.order_by('-id').first()
+    current_time = datetime.now()
+    if last_theme != None and current_time < last_theme['stage_3'] and current_time >= last_theme['stage_2']:
+        return last_theme
+    else:
+        return ''
 
-# def getCurrentStage(url=''):
-    # theme = CurrentTheme.objects.order_by('-id').first()
-    # stage = ""
-    # current_time = datetime.now()
+def getCurrentStage():
+    theme = CurrentTheme.objects.order_by('-id').first()
+    stage = ""
+    current_time = datetime.now()
 
-    # if theme['stage_1'] <= current_time and theme['stage_4'] >= current_time :
-    #     if current_time < theme['stage_2']:
-    #         stage = "Suggestion"
-    #     elif current_time < theme['stage_3']:
-    #         if theme['theme'] == '':
-    #             theme = choice(getAllThemes())['theme']
-    #             theme.update(theme=theme)
-    #         stage = "Loading"
-    #     else:
-    #         stage = "Assessment"
-    # return stage
+    if theme['stage_1'] <= current_time and theme['stage_4'] >= current_time :
+        if current_time < theme['stage_2']:
+            stage = "Suggestion"
+        elif current_time < theme['stage_3']:
+            if theme['theme'] == '':
+                theme = choice(getAllThemes())['theme']
+                theme.update(theme=theme)
+            stage = "Loading"
+        else:
+            stage = "Assessment"
+    return stage
 
 def addTheme(login, theme):
     try:
