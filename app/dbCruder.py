@@ -57,7 +57,10 @@ def getUser(login):
             result['work_stage'] = "Suggestion"
         elif current_time < current_theme['stage_3']:
             if current_theme['theme'] == '':
-                current_theme.update(theme=choice(getAllThemes())['theme'])
+                try:
+                    current_theme.update(theme=choice(getAllThemes())['theme'])
+                except:
+                    pass
             result['work_stage'] = "Loading"
         else:
             result['work_stage'] = "Assessment"
