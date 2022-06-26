@@ -6,3 +6,33 @@ services:
         dockerfile: server.dockerfile
     ports:
       - "5000:5000"
+  mongo:
+    image: mongo
+    container_name: mongodb
+    environment:
+      - MONGO_INITDB_DATABASE=pismo
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+    volumes:
+      - ./mongo-volume:/data/db
+    networks:
+      - mongonet
+    ports:
+      - '27017-27019:27017-27019'
+  mongo-express:
+    container_name: mongo-express
+    image: mongo-express
+    depends_on:
+      - mongo
+    networks: 
+      - mongonet
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=root
+      - ME_CONFIG_BASICAUTH_USERNAME=levch
+      - ME_CONFIG_BASICAUTH_PASSWORD=ubuntu
+    ports:
+      - '8081:8081'
+    volumes: 
+      - ./data:/data/db 
