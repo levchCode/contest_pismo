@@ -15,8 +15,6 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=root
     volumes:
       - ./mongo-volume:/data/db
-    networks:
-      - mongonet
     ports:
       - '27017-27019:27017-27019'
   mongo-express:
@@ -24,8 +22,8 @@ services:
     image: mongo-express
     depends_on:
       - mongo
-    networks: 
-      - mongonet
+   links: 
+      - mongo
     environment:
       - ME_CONFIG_MONGODB_SERVER=mongo
       - ME_CONFIG_MONGODB_ADMINUSERNAME=root
