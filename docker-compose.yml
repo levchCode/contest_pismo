@@ -19,9 +19,7 @@ services:
       - '27017-27019:27017-27019'
   mongo-express:
     container_name: mongo-express
-    image: mongo-express
-    depends_on:
-      - mongo
+    image: mongo-express    
     links: 
       - mongo
     environment:
