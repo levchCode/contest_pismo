@@ -22,7 +22,7 @@ services:
     image: mongo-express
     depends_on:
       - mongo
-   links: 
+    links: 
       - mongo
     environment:
       - ME_CONFIG_MONGODB_SERVER=mongo
