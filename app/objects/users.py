@@ -1,10 +1,8 @@
 from app import *
 
 
-class User(UserMixin, db.Document):
+class User(db.Document):
     meta = {'collection': 'Users'}
     name = db.StringField(required=True)
-    login = db.StringField(unique=True, required=True)
-    email = db.StringField(unique=True, required=True)
-    password = db.StringField(required=True)
-    role = db.StringField(required=True, default='User')
+    nickname = db.StringField(unique=True, required=True)
+    role = db.StringField(required=True, default='User') # Can be 'User' (no contest), 'Contestant' (contest is underway)

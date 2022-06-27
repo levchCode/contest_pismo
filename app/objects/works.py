@@ -1,23 +1,17 @@
 from app import *
-from datetime import datetime
 
-class Rating(db.EmbeddedDocument):
-    login = db.StringField()
-    name = db.StringField()
+class Review(db.EmbeddedDocument):
+    meta = {'collection': 'Reviews'}
     grammar = db.IntField()
     vocabulary = db.IntField()
     relevance = db.IntField()
-    comment = db.StringField()
 
-class Work(db.Document):
-    meta = {'collection': 'Works'}
-    url = db.StringField(required=True)
+
+class Essay(db.Document):
+    meta = {'collection': 'Essays'}
     login = db.StringField(required=True)
     name = db.StringField(required=True)
-    theme = db.StringField(required=True)
-    title = db.StringField(required=True)
-    work = db.StringField(required=True)
-    status = db.StringField(required=True, default='На рассмотрении')
-    rating = db.EmbeddedDocumentListField(Rating, default=[])
-    voices = db.IntField(default=0)
-    year = db.StringField(default = str(datetime.today().year))
+    # Link of contests
+    text = db.StringField(required=True)
+    status = db.StringField(required=True, default='Опубликован')
+    review = db.EmbeddedDocumentListField(Rating, default=[])

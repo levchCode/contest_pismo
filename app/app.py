@@ -1,21 +1,14 @@
-from flask_login import LoginManager, UserMixin, current_user, login_user, logout_user
-from flask import Flask, render_template, request, flash, redirect, url_for, make_response
-from flask_mongoengine import MongoEngine, Document
+from flask import Flask
+from flask_pymongo import PyMongo
 from secret import *
-
-
-UPLOAD_FOLDER = 'app/static/works'
-ALLOWED_EXTENSIONS = {'txt', 'doc', 'docx'}
 
 app = Flask(__name__)
 app.secret_key = app_secret_key
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MONGODB_SETTINGS'] = {
-    'db': DB_name,
-    'host': DB_link
-}
 
-db = MongoEngine(app)
-login_manager = LoginManager(app)
+app = Flask(__name__)
+app.config["MONGO_URI"] = "mongodb://mongo:27017/pismo"
+mongo = PyMongo(app)
 
-from dbCruder import *
+@app.route('/', methods=['GET'])
+def hello():
+    return 'This is Pismo contest API! If you see this message, it means that the API is up and running'
