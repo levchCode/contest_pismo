@@ -19,3 +19,6 @@ venv.bak/
 .vscode/
 credentials.json
 token.pickle
+
+#Mongodb
+mongo-volume/
