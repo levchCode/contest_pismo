@@ -14,6 +14,8 @@ import Rules from './pages/Rules'
 import Submit from './pages/Submit'
 import Work from './pages/Work'
 
+import './css/main.css';
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <BrowserRouter>

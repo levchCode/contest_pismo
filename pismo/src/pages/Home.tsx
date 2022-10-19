@@ -1,16 +1,17 @@
 import MainBar from '../components/MainBar'
 import background from '../assets/background.svg'
+import Button from '@mui/material/Button'
+
+import '../css/main.css';
 
 
 function Home() {
     return (
-        <>
+        <div className="mainscreen" style={{ backgroundImage: `url(${background})` }}>
             <MainBar />
-            <div className="background" style={{ backgroundImage: `url(${background})`, width: '100%',
-  height: '800px',  backgroundSize: 'cover' }}>
-                <h1>Конкурс письменный работ на русском языке</h1>
-            </div>
-        </> 
+            <h1 className='main-center'>Конкурс письменных работ на русском языке</h1>
+            <Button size="large" variant="contained" className='centered'>Участвовать</Button>
+        </div>
     )
 }
 export default Home

@@ -1,0 +1,28 @@
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+.mainscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    overflow: auto;
+    background-size: cover;
+}
+
+.main-center {
+    text-align: center;
+    padding-top: 15%;
+    padding-bottom: 3%;
+}
+
+.centered {
+    left: 45%
+}
