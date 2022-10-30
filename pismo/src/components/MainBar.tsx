@@ -11,8 +11,58 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 
-const pages = ['Правила', 'Результаты', 'Работы'];
-const settings = ['Личный кабинет', 'Выход'];
+import {
+  Link
+} from "react-router-dom";
+
+const STATES = [
+  'hiatus',
+  'compete'
+];
+
+//TODO: Запрос на состояние конкурса
+
+const CURRENT_STATE = 'compete';
+
+const pages = {
+  'hiatus': [
+    {
+      name: 'Правила',
+      link: '/rules',
+    },
+    {
+      name: 'Результаты',
+      link: '/results',
+    }, 
+    {
+      name: 'Работы участников',
+      link: '/works',
+    }
+  ],
+  'compete': [
+    {
+      name: 'Правила',
+      link: '/rules',
+    },
+    {
+      name: 'Моя работа',
+      link: '/work',
+    }
+  ]
+};
+
+const settings = 
+[
+    {
+      name: 'Личный кабинет',
+      link: '/profile'
+    },
+    {
+      name: 'Выход',
+      link: '/logout'
+    }
+]
+
 
 const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -84,9 +134,9 @@ const ResponsiveAppBar = () => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+              {pages[CURRENT_STATE].map((page) => (
+                <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">{page.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -110,13 +160,14 @@ const ResponsiveAppBar = () => {
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
+            {pages[CURRENT_STATE].map((page) => (
               <Button
-                key={page}
+                key={page.name}
+                component={Link} to={page.link}
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
-                {page}
+                {page.name}
               </Button>
             ))}
           </Box>
@@ -144,8 +195,8 @@ const ResponsiveAppBar = () => {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                <MenuItem component={Link} to={setting.link} key={setting.name} onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">{setting.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>

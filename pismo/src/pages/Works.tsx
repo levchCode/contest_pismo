@@ -2,22 +2,25 @@ import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
 import MainBar from '../components/MainBar'
+import {
+    Link
+} from "react-router-dom";
 
-function Rules() {
+function Works() {
     return (
         <div className='grey mainscreen'>
         <MainBar />
         <Stack spacing={2} alignItems="center">
-            <h1>Правила конкурса</h1>
+            <h1>Работы участников (2022)</h1>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <Paper className='rule' elevation={3} >
-                        Правило 1
+                        leVch
                     </Paper>
                 </Grid>
                 <Grid item xs={12}>
                     <Paper className='rule' elevation={3} >
-                        Правило 2
+                        Cevch
                     </Paper>
                 </Grid>
                 <Grid item xs={12}>
@@ -40,4 +43,4 @@ function Rules() {
         </div>
     )
 }
-export default Rules
+export default Works
