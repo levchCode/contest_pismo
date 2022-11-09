@@ -9,6 +9,6 @@ app = Flask(__name__)
 app.config["MONGO_URI"] = "mongodb://mongo:27017/pismo"
 mongo = PyMongo(app)
 
-@app.route('/', methods=['GET'])
+@app.route('/api', methods=['GET'])
 def hello():
     return 'This is Pismo contest API! If you see this message, it means that the API is up and running'

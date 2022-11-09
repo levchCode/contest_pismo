@@ -32,13 +32,13 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <BrowserRouter>
           <Routes>
-            <Route exact path="/" element={<Home/>} />
-            <Route exact path="/login" element={<Login/>} />
-            <Route exact path="/profile" element={<Profile/>} />
-            <Route exact path="/rules" element={<Rules/>} />
-            <Route exact path="/submit" element={<Submit/>} />
-            <Route exact path="/work" element={<Work/>} />
-            <Route exact path="/works" element={<Works/>} />
+            <Route path="/" element={<Home/>} />
+            <Route path="/login" element={<Login/>} />
+            <Route path="/profile" element={<Profile/>} />
+            <Route path="/rules" element={<Rules/>} />
+            <Route path="/submit" element={<Submit/>} />
+            <Route path="/work" element={<Work/>} />
+            <Route path="/works" element={<Works/>} />
           </Routes>
     </BrowserRouter>
   </React.StrictMode>

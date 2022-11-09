@@ -11,11 +11,11 @@ import {clientId} from '../consts'
 import { Stack } from '@mui/material';
 
 function Login() {
-    const onSuccess = (res) => {
+    const onSuccess = (res: any) => {
         console.log(res)
     }
 
-    const onFailure = (res) => {
+    const onFailure = (res: any) => {
         console.log(res)
     }
 

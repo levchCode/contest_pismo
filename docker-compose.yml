@@ -6,6 +6,12 @@ services:
         dockerfile: server.dockerfile
     ports:
       - "5000:5000"
+  nginx:
+    build: 
+        context: .
+        dockerfile: client.dockerfile
+    ports:
+      - "80:80"
   mongo:
     image: mongo
     container_name: mongodb
