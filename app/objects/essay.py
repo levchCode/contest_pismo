@@ -9,9 +9,10 @@ class Review(db.EmbeddedDocument):
 
 class Essay(db.Document):
     meta = {'collection': 'Essays'}
-    login = db.StringField(required=True)
-    name = db.StringField(required=True)
-    # Link of contests
+    user = db.StringField(required=True)
+    contest = db.StringField(required=True)
+    date = db.StringField(required=True)
+    title = db.StringField(required=True)
     text = db.StringField(required=True)
     status = db.StringField(required=True, default='Опубликован')
-    review = db.EmbeddedDocumentListField(Rating, default=[])
+    reviews = db.EmbeddedDocumentListField(Review, default=[])
