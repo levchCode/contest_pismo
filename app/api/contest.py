@@ -1,20 +1,21 @@
 from app import *
-from flask import request
+from flask import request, jsonify
 from services import ContestService
+
 # Получить Конкурс по id
 @app.route('/api/contests/<id>', methods=['GET'])
 def getContestById(id):
-    return ''
+    return jsonify(ContestService.getContestById(_id=id))
 
 # Получить актуальный Конкурс
 @app.route('/api/contests/active', methods=['GET'])
 def getActive():
-    return ''
+    return jsonify(ContestService.getContests(active=1))
 
 # Получить все Конкурсы
 @app.route('/api/contests/', methods=['GET'])
 def getContests():
-    return ''
+    return jsonify(ContestService.getContests(active=None))
 
 # Создать Конкурс
 @app.route('/api/contests/create', methods=['POST'])
@@ -24,4 +25,4 @@ def saveContest():
 # Редактировать Конкурс
 @app.route('/api/contests/update/<id>', methods=['PATCH'])
 def updateContest(id):
-    return ''
+    return jsonify(ContestService.updateContest(_id=id, data=request.json))

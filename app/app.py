@@ -6,10 +6,10 @@ from secret import *
 app = Flask(__name__)
 app.secret_key = app_secret_key
 
-app.config["MONGO_URI"] = "mongodb://levch:ubuntu@mongodb:27017/pismo"
+app.config["MONGO_URI"] = "mongodb://root:root@mongodb:27017/pismo?authSource=admin"
 app.config['MONGODB_SETTINGS'] = {
     'db': 'pismo',
-    'host': 'mongodb://levch:ubuntu@mongodb:27017'
+    'host': 'mongodb://root:root@mongodb:27017/pismo?authSource=admin'
 }
 
 mongo = PyMongo(app)
