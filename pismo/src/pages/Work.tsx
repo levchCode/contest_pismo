@@ -3,8 +3,19 @@ import MainBar from '../components/MainBar'
 import Stack from '@mui/material/Stack';
 import { Rating } from '@mui/material';
 import Grid from '@mui/material/Grid';
+import { request } from '../services/EssayService';
+import {useState, useEffect} from 'react';
+import { useParams } from 'react-router-dom';
 
-function Work() {
+function Work(this: any) {
+    const [state, setState] = useState([])
+
+    const { id } = useParams();
+
+    useEffect(() => {
+        console.log(id)
+    })
+
     return (
         <div className='grey mainscreen'>
             <MainBar />

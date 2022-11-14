@@ -18,7 +18,7 @@ def getByUserId(user_id):
 # Загрузить Сочинение
 @app.route('/api/essay/submit', methods=['POST'])
 def saveEssay():
-    return EssayService.saveEssay()
+    return EssayService.saveEssay(data=request.json)
 
 # Оставить отзыв
 @app.route('/api/essay/review/<id>', methods=['POST'])

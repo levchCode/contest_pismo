@@ -40,10 +40,10 @@ def addReview(_id, data):
 
 
 def saveEssay(data):
-    #TODO: проверить пользователя
+    #TODO: проверить пользователя и можно загрузить только одно сочинение
     try:
        
-        Essay(
+        essay = Essay(
             user = data['user'],
             contest = data['contest'],
             active = 1,
@@ -55,6 +55,7 @@ def saveEssay(data):
 
         return {
             'status': 1,
+            'url': '/work/' + str(essay.id),
             'msg': 'OK'
         }
     except Exception as e:

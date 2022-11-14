@@ -37,7 +37,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
             <Route path="/profile" element={<Profile/>} />
             <Route path="/rules" element={<Rules/>} />
             <Route path="/submit" element={<Submit/>} />
-            <Route path="/work" element={<Work/>} />
+            <Route path="/work/:id" element={<Work/>} />
             <Route path="/works" element={<Works/>} />
           </Routes>
     </BrowserRouter>
