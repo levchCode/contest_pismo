@@ -3,7 +3,7 @@ from objects.essay import Essay, Review;
 from datetime import datetime
 
 def getEssayById(id):
-    return Essay.objects.get(_id = id)
+    return Essay.objects.get(id = id)
 
 def getEssayByUserId(user_id):
     return Essay.objects.get(user = user_id)

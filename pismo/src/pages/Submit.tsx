@@ -3,7 +3,7 @@ import Button from '@mui/material/Button'
 import MainBar from '../components/MainBar'
 import { TextField } from '@mui/material'
 import { FormEvent, useState } from 'react';
-import { request } from '../services/EssayService';
+import { post } from '../services/GeneralService';
 
 function Submit() {
 
@@ -17,7 +17,7 @@ function Submit() {
             contest: '1988'//localStorage.getItem('contestId')
         }
 
-        request('/api/essay/submit', 'POST', data)
+        post('/api/essay/submit', data)
         .then((data) => {
           if (data['status'] === 1) {
             window.location.href = data.url
