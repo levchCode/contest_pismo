@@ -6,13 +6,13 @@ def getEssayById(id):
     return Essay.objects.get(id = id)
 
 def getEssayByUserId(user_id):
-    return Essay.objects.get(user = user_id)
+    return Essay.objects.filter(user = user_id)
 
 def getActiveEssay(user_id):
     return Essay.objects.get(user = user_id, active = 1)
 
 def getRaiting(contest_id):
-    return Essay.objects.get(contest=contest_id)
+    return Essay.objects.filter(contest = contest_id)
 
 def addReview(_id, data):
     #TODO: проверка на админа

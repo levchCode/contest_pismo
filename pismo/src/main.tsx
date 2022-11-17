@@ -12,6 +12,7 @@ import Profile from './pages/Profile'
 import Rules from './pages/Rules'
 import Submit from './pages/Submit'
 import Work from './pages/Work'
+import Review from './pages/Review'
 import Works from './pages/Works'
 
 import { gapi } from "gapi-script";
@@ -38,7 +39,8 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
             <Route path="/rules" element={<Rules/>} />
             <Route path="/submit" element={<Submit/>} />
             <Route path="/work/:id" element={<Work/>} />
-            <Route path="/works" element={<Works/>} />
+            <Route path="/review/:id" element={<Review/>} />
+            <Route path="/works/:contest" element={<Works/>} />
           </Routes>
     </BrowserRouter>
   </React.StrictMode>

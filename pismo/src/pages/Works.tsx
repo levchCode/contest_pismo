@@ -1,45 +1,31 @@
-import Grid from '@mui/material/Grid'
-import Paper from '@mui/material/Paper'
-import Stack from '@mui/material/Stack'
+import WorkList from '../components/WorkList';
 import MainBar from '../components/MainBar'
-import {
-    Link
-} from "react-router-dom";
+import { get } from '../services/GeneralService';
+import {useState, useEffect} from 'react';
+import { useParams } from 'react-router-dom';
+import Stack from '@mui/material/Stack'
 
 function Works() {
+    const { contest } = useParams();
+
+    const [state, setState] = useState({
+        works: [],
+        isFetching: true
+    })
+
+    useEffect(() => {
+        get('/api/essay/raiting/' + contest)
+        .then((data) => {
+            setState({ works: data, isFetching: false });
+        });
+    }, [])
+
     return (
         <div className='grey mainscreen'>
         <MainBar />
-        <Stack spacing={2} alignItems="center">
-            <h1>Работы участников (2022)</h1>
-            <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <Paper className='rule' elevation={3} >
-                        leVch
-                    </Paper>
-                </Grid>
-                <Grid item xs={12}>
-                    <Paper className='rule' elevation={3} >
-                        Cevch
-                    </Paper>
-                </Grid>
-                <Grid item xs={12}>
-                    <Paper className='rule' elevation={3} >
-                        Правило 3
-                    </Paper>
-                </Grid>
-                <Grid item xs={12}>
-                    <Paper className='rule' elevation={3} >
-                        Правило 4
-                    </Paper>
-                </Grid>
-                <Grid item xs={12}>
-                    <Paper className='rule' elevation={3} >
-                        Правило 5
-                    </Paper>
-                </Grid>
-            </Grid>
-        </Stack>
+
+        <h1>Работы участников (2022)</h1>
+        <WorkList works={state.works} mode='user'/>
         </div>
     )
 }
