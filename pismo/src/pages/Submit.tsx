@@ -2,8 +2,8 @@ import TextareaAutosize from '@mui/material/TextareaAutosize'
 import Button from '@mui/material/Button'
 import MainBar from '../components/MainBar'
 import { TextField } from '@mui/material'
-import { FormEvent, useState } from 'react';
-import { post } from '../services/GeneralService';
+import { FormEvent, useState, useEffect } from 'react';
+import { get, post } from '../services/GeneralService';
 
 function Submit() {
 
@@ -13,8 +13,8 @@ function Submit() {
         let data = {
             text: text,
             title: title,
-            user: '1234',//localStorage.getItem('userId'),
-            contest: '1988'//localStorage.getItem('contestId')
+            user: localStorage.getItem('userId'),
+            contest: localStorage.getItem('contestId')
         }
 
         post('/api/essay/submit', data)
@@ -26,13 +26,28 @@ function Submit() {
         
     }
 
+    useEffect(() => {
+        const contestId = localStorage.getItem('contestId')
+        const userLevel = localStorage.getItem('level')
+
+        if (userLevel && contestId) {
+            get('/api/contests/' + contestId)
+            .then((data) => {
+                setTopic(data.contest.topics[userLevel].title)
+            });
+        } 
+    }, [])
+
     const [title, setTitle] = useState("");
     const [text, setText] = useState("");
+    const [topic, setTopic] = useState("")
 
     return (
         <>
         <MainBar />
         <h1>Загрузить работу</h1>
+
+        <p>Тема конкурса: <b>{topic}</b></p>
 
         <p>Напишите или вставьте текст Вашей работы</p>
         <form onSubmit={e => {handleSubmit(e)}}>

@@ -8,9 +8,9 @@ def getContestById(id):
     return jsonify(ContestService.getContestById(_id=id))
 
 # Получить актуальный Конкурс
-@app.route('/api/contests/active', methods=['GET'])
+@app.route('/api/contests/last', methods=['GET'])
 def getActive():
-    return jsonify(ContestService.getContests(active=1))
+    return jsonify(ContestService.getContests(last = 1))
 
 # Получить все Конкурсы
 @app.route('/api/contests/', methods=['GET'])
