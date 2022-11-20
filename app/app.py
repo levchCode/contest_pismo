@@ -44,6 +44,12 @@ db = MongoEngine(app)
 def hello():
     return '1 This is Pismo contest API! If you see this message, it means that the API is up and running'
 
+@app.route('/login')
+def login():
+    google = oauth.create_client('google')  # create the google oauth client
+    redirect_uri = url_for('authorize', _external=True)
+    return google.authorize_redirect(redirect_uri)
+
 #этот эндпоинт не нужен, просто я через него получал токен для себя
 @app.route('/authorize')
 def authorize():
