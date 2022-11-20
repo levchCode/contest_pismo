@@ -14,12 +14,16 @@ import Submit from './pages/Submit'
 import Work from './pages/Work'
 import Review from './pages/Review'
 import Works from './pages/Works'
+import WorksReview from './pages/WorksReview';
+import WorksUser from './pages/WorksUser';
 
 import { gapi } from "gapi-script";
 
 import {clientId} from './consts';
 
 import './css/main.css';
+
+
 
 gapi.load("client:auth2", () => {
   gapi.client.init({
@@ -41,6 +45,8 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
             <Route path="/work/:id" element={<Work/>} />
             <Route path="/review/:id" element={<Review/>} />
             <Route path="/works/:contest" element={<Works/>} />
+            <Route path="/review/:contest" element={<WorksReview/>} />
+            <Route path="/user/works/:id" element={<WorksUser/>} />
           </Routes>
     </BrowserRouter>
   </React.StrictMode>

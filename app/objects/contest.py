@@ -8,6 +8,6 @@ class Topic(db.EmbeddedDocument):
 class Contest(db.Document):
     meta = {'collection': 'Contests'}
     year = db.IntField(required=True)
-    start = db.StringField(required=True)
-    finish = db.StringField(required=True)
+    start = db.IntField(required=True)
+    finish = db.IntField(required=True)
     topics = db.EmbeddedDocumentListField(Topic, default=[])

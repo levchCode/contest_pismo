@@ -4,7 +4,7 @@ import { get } from '../services/GeneralService';
 import {useState, useEffect} from 'react';
 import { useParams } from 'react-router-dom';
 
-function Works() {
+function WorksReview() {
     const { contest } = useParams();
 
     const [state, setState] = useState({
@@ -23,9 +23,9 @@ function Works() {
         <div className='grey mainscreen'>
         <MainBar />
 
-        <h1>Работы участников ({localStorage.getItem('year')})</h1>
-        <WorkList works={state.works} mode='user'/>
+        <h1>Работы участников (2022)</h1>
+        <WorkList works={state.works} mode='review'/>
         </div>
     )
 }
-export default Works
+export default WorksReview

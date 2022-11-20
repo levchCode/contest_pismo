@@ -55,6 +55,7 @@ def saveEssay(data):
 
         return {
             'status': 1,
+            'essayId': str(essay.id),
             'url': '/work/' + str(essay.id),
             'msg': 'OK'
         }

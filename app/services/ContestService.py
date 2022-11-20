@@ -2,9 +2,9 @@ from app import *
 from datetime import datetime
 from objects.contest import Contest, Topic
 
-def getContests(active):
-    if active:
-        data = Contest.objects.get(active = active)
+def getContests(last):
+    if last:
+        data = Contest.objects.order_by('-id').first()
     else:
         data = Contest.objects.all()
     

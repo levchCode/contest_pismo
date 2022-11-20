@@ -10,46 +10,12 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import { get } from '../services/GeneralService';
 
 import {
   Link
 } from "react-router-dom";
 
-const STATES = [
-  'hiatus',
-  'compete'
-];
-
-//TODO: Запрос на состояние конкурса
-
-const CURRENT_STATE = 'compete';
-
-const pages = {
-  'hiatus': [
-    {
-      name: 'Правила',
-      link: '/rules',
-    },
-    {
-      name: 'Результаты',
-      link: '/results',
-    }, 
-    {
-      name: 'Работы участников',
-      link: '/works',
-    }
-  ],
-  'compete': [
-    {
-      name: 'Правила',
-      link: '/rules',
-    },
-    {
-      name: 'Моя работа',
-      link: '/work',
-    }
-  ]
-};
 
 const settings = 
 [
@@ -83,6 +49,100 @@ const ResponsiveAppBar = () => {
     setAnchorElUser(null);
   };
 
+    const [state, setState] = React.useState({
+      contest: {
+          id: '',
+          year: 0,
+          start: new Date(),
+          finish: new Date(),
+          topics: []
+      },
+      activeEssay: '',
+      isFetching: true
+  })
+
+  React.useEffect(() => {
+      get('/api/contests/last')
+      .then((data) => {
+          data.id = data._id['$oid']
+          data.start = new Date(data.start * 1000)
+          data.finish = new Date(data.finish * 1000)
+          setState({ contest: state.contest, activeEssay: '', isFetching: false });
+
+          const current = (new Date());
+
+          if (data.start < current && current < data.finish) {
+            get('/api/essay/active/' + localStorage.getItem('userId'))
+            .then((data) => {
+              data.id = data._id['$oid']
+              setState({ contest: state.contest, activeEssay: data.id, isFetching: false });
+            });
+          } 
+            
+      });
+  }, [])
+
+  const pages = {
+    hiatus: [
+      {
+        name: 'Правила',
+        link: '/rules',
+      },
+      {
+        name: 'Работы участников',
+        link: '/works/' + state.contest.id,
+      }
+    ],
+    compete: [
+      {
+        name: 'Правила',
+        link: '/rules',
+      },
+      {
+        name: 'Моя работа',
+        link: state.activeEssay !== '' ?  '/work/' + state.activeEssay : '/submit' ,
+      }
+    ]
+  };
+
+  const checkDate = () => {
+    const current = (new Date());
+    const start = state.contest.start
+    const finish = state.contest.finish
+
+    if (start && finish) {
+      return (start < current && current < finish)
+    }
+  }
+
+  const renderTabs = () => {
+    if (state.contest && checkDate()) {
+      return <>
+      {
+        pages.compete.map((page: { name: string, link: string }) => (
+          <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+            <Link to={page.link} style={{ textDecoration: 'none'}}>
+              <Typography textAlign="center">{page.name}</Typography>
+            </Link>
+          </MenuItem>
+        ))
+      }
+    </>
+    } else {
+      return <>
+      {
+        pages.hiatus.map((page: { name: string, link: string }) => (
+          <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+            <Link to={page.link} style={{ textDecoration: 'none'}}>
+              <Typography textAlign="center">{page.name}</Typography>
+            </Link>
+          </MenuItem>
+        ))
+      }
+    </>
+    }
+  }
+
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -102,7 +162,7 @@ const ResponsiveAppBar = () => {
               textDecoration: 'none',
             }}
           >
-            Письмо - 2022
+            Письмо
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -134,11 +194,9 @@ const ResponsiveAppBar = () => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages[CURRENT_STATE].map((page) => (
-                <MenuItem key={page.name} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page.name}</Typography>
-                </MenuItem>
-              ))}
+              {
+                renderTabs()
+              }
             </Menu>
           </Box>
           <Typography
@@ -160,16 +218,9 @@ const ResponsiveAppBar = () => {
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages[CURRENT_STATE].map((page) => (
-              <Button
-                key={page.name}
-                component={Link} to={page.link}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page.name}
-              </Button>
-            ))}
+              {
+                renderTabs()
+              }
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>

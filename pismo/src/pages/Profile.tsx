@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 
 function Profile() {
+
     return (
         <div className='grey mainscreen'>
             <MainBar />
@@ -25,8 +26,7 @@ function Profile() {
                     <br/>
 
                     <div>
-                        <Button component={Link} to='/works' variant="contained">Предыдущие работы</Button>
-                        <Button component={Link} to='/work' variant="contained">Моя работа</Button>
+                        <Button component={Link} to={'/user/works/' + localStorage.getItem('userId')} variant="contained">Мои работы</Button>
                     </div>
                 </Paper>
             </Stack>
