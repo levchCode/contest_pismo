@@ -22,8 +22,33 @@ function Register() {
     return (
         <div className='grey mainscreen'>
             <MainBar />
+
+            <TextField
+                id="outlined-helperText"
+                label="Ваш логин"
+                defaultValue=""
+            />
+
+            <br/>
+            <br/>
+
+            <Select
+                labelId="demo-simple-select-helper-label"
+                id="demo-simple-select-helper"
+                value={1}
+                label="Уровень"
+            >
+                <MenuItem value={1}>Beginner</MenuItem>
+                <MenuItem value={2}>Pre-Intermediate</MenuItem>
+                <MenuItem value={3}>Intermediate</MenuItem>
+                <MenuItem value={4}>Upper-Intermediate</MenuItem>
+            </Select>
+
+            <br/>
+            <br/>
+
             <Stack spacing={2} alignItems="center">
-                <h1> Регистрация</h1>
+                <h1>Регистрация</h1>
                 <Paper className='rule' elevation={3} >
                     <GoogleLogin
                         clientId={clientId}

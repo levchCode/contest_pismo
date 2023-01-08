@@ -16,12 +16,14 @@ import Review from './pages/Review'
 import Works from './pages/Works'
 import WorksReview from './pages/WorksReview';
 import WorksUser from './pages/WorksUser';
+import Register from './pages/Register';
 
 import { gapi } from "gapi-script";
 
 import {clientId} from './consts';
 
 import './css/main.css';
+
 
 
 
@@ -39,6 +41,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
           <Routes>
             <Route path="/" element={<Home/>} />
             <Route path="/login" element={<Login/>} />
+            <Route path="/reg" element={<Register/>} />
             <Route path="/profile" element={<Profile/>} />
             <Route path="/rules" element={<Rules/>} />
             <Route path="/submit" element={<Submit/>} />

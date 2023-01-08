@@ -22,3 +22,5 @@ token.pickle
 
 #Mongodb
 mongo-volume/
+mongo-volume/journal/
+
